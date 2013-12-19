@@ -1,0 +1,2380 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=yes, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+<!--        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" /> -->
+<!--        <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+	<!-- jquery.mobile -->
+<!--	<link rel="stylesheet" href="css/tumen.css" /> -->
+	<link rel="stylesheet" href="css/jquery.mobile-1.3.2.css" />
+	<link rel="stylesheet" href="css/jquery.mobile.structure-1.3.2.css" />
+	<!-- календарь -->
+<!--	<link rel="stylesheet" type="text/css" href="css/datebox/jqm-datebox.min.css" /> -->
+        <!-- jquery -->   
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+	<script src="js/jquery-1.9.1.min.js"></script>
+<!--	<script src="js/jquery.inputmask.js" type="text/javascript"></script>
+	<script src="js/jquery.maskedinput.js" type="text/javascript"></script> -->
+	
+
+	<style type="text/css">
+	  .ik-table thead{
+	    background:#77a922;
+	    background:linear-gradient(top,#7fb424 43%,#77a922 72%,#66911d 100%);
+	    background:-o-linear-gradient(top,#7fb424 43%,#77a922 72%,#66911d 100%);
+	    background:-moz-linear-gradient(top,#7fb424 43%,#77a922 72%,#66911d 100%);
+	    background:-webkit-linear-gradient(top,#7fb424 43%,#77a922 72%,#66911d 100%);
+	    background:-ms-linear-gradient(top,#7fb424 43%,#77a922 72%,#66911d 100%);
+	    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#7FB424',endColorstr='#77A922',GradientType=0);
+	    background:-webkit-gradient(linear,left top,left bottom,color-stop(0.43,#7fb424),color-stop(0.72,#77a922),color-stop(1,#66911d));
+	    border-radius:5px 5px 0 0}
+	  .ik-table thead td{color:#fff;font-weight:bold}
+	  .ik-table tr{border:1px solid #c8c8c8}
+	  .ik-table tbody tr:nth-of-type(odd){background-color:#f3f3f3}
+	  .ik-table td{padding:5px 5px 5px 10px}
+	  
+	    #serviceListInfo2_Service {
+		    margin-top: -.25em;
+		    display: inline-block;
+		    width: 97%;
+		    overflow-x: scroll;
+		    overflow-y: hidden;}
+		    
+	    #serviceListInfo2_Service div {
+		    width: 100em;
+		    overflow-x: hidden;
+		    overflow-y: hidden;}
+		    
+	    #serviceListInfo2_Service table {
+		    width: 100%;}
+
+	    #serviceListInfo2_scroll {
+	      overflow: hidden;
+	    }
+
+	</style>
+	
+        <script type="text/javascript">
+	  //Данное событие должно быть прописано до подключения скрипта js/jquery.mobile-1.3.2.min.js
+	  $(document).bind('mobileinit', function() {
+/*	    $(document).bind('pagebeforechange', function(e, data) {
+		var to = data.toPage,
+		    from = data.options.fromPage;
+		if (typeof to  == 'string') {
+		    var u = $.mobile.path.parseUrl(to);
+		    to = u.hash || '#' + u.pathname.substring(1);
+		    if (from) from = '#' + from.attr('id');
+
+		    if (from == '#settings') {
+			alert('Вы несохранили настройки!');
+			e.preventDefault();
+			e.stopPropagation();
+			
+			// remove active status on buttons
+			var $active = $.mobile.activePage
+			    .find('.ui-btn-active')
+			    .removeClass('ui-btn-active');
+		    }
+		    
+		}
+	    });*/
+	  });        
+	</script>  
+	<script src="js/jquery.mobile-1.3.2.min.js"></script>
+	<script src="js/date.format.js"></script>
+	<script type="text/javascript" src="js/iscroll.js"></script>
+	<!-- календарь -->
+	<!-- Optional Mousewheel support: https://github.com/brandonaaron/jquery-mousewheel -->
+<!--	<script type="text/javascript" src="PATH/TO/YOUR/COPY/OF/jquery.mousewheel.min.js"></script> -->
+<!--	<script type="text/javascript" src="js/datebox/jqm-datebox.core.min.js"></script>
+	<script type="text/javascript" src="js/datebox/jqm-datebox.mode.calbox.min.js"></script>
+	<script type="text/javascript" src="js/datebox/jqm-datebox.mode.flipbox.min.js"></script>
+	<script type="text/javascript" src="js/datebox/jquery.mobile.datebox.i18n.ru.utf8.js"></script> -->
+	
+	<script type="text/javascript" src="phonegap.js"></script>
+	
+        <title>Мобильное МФЦ</title>
+	<style type="text/css">
+	   
+	</style>        
+        <script type="text/javascript">
+
+	    var ddd;
+	    var storeName='propsAppMFCN11';
+	    var propsAppEt = {'phone':'','email':'','password':'','urlrepo':'http://192.168.58.135','auto_selectMFC':'','director':false,'lastApp':'user','register':false};
+	    var propsApp;
+	    var userError;
+	    var modeServiceInfo;
+	    var packNum;
+	    var authCode;
+	    var requestId;
+	    var isRequestRepo;
+	    var okgu;
+	    var okgu_current;
+	    var okgu_answer={};
+	    //mfc, tumen, test, salehard
+	    var typeApp='salehard';
+	    var deviceready=false;
+
+	    //alert("cordova" in window);
+	    if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
+		document.addEventListener("deviceready", init, true);
+	    };
+
+	    function init(){
+	      $.mobile.defaultPageTransition   = 'none';
+	      $.mobile.defaultDialogTransition = 'none';
+	      $.mobile.buttonMarkup.hoverDelay = 0;
+	      //
+	      loadSettings();
+	      //
+	      if (propsApp['director']){
+		$('#main_check_app').css('display','block');
+		if (propsApp['lastApp']=='director')
+		  checkMode(1);
+		else  
+		  checkMode(0);
+	      }
+	      //Скрываем пункты меню, в зависимости от типа приложения
+	      if (typeApp=='tumen'){
+		$("#item_callBack").css("display","none");
+		$("#item_records").css("display","none");
+		$("#item_eq").css("display","none");
+		$("#item_director_search").css("display","none");
+		$("#urlrepo_div").css("display","none");
+	      }else if (typeApp=='salehard'){
+		$("#urlrepo_div").css("display","none");
+		$('#main_check_app').css('display','none');
+	      }
+	      //
+	      disableMenuItem();
+	      //
+	      deviceready=true;
+	    }
+	    
+	    function emptyValue(val){
+	      return val==undefined||val==''||val==null;
+	    }
+	      
+	    function setValueAutocomplete(id,key,label){
+	      var el=$('#'+id).closest('[data-role=listview]').prev('form').find('input');
+	      el.attr("key",key);
+	      el.val(label);
+	    }
+
+	    function getValueAutocomplete(id){
+	      var el=$('#'+id).closest('[data-role=listview]').prev('form').find('input');
+	      var res = {'key':el.attr('key'),'label':el.val()};
+	      return res;
+	    }
+
+	    function saveSattings(){
+	      $.each( propsAppEt, function ( i, val ) {
+		if (i.substr(0,5)=='auto_'){
+		  var id=i.substring(5);
+		  var res=getValueAutocomplete(id);
+		  if (res["label"]!=undefined)
+		    propsApp[i]=res["label"];
+		  if (res["key"]!=undefined)
+		    propsApp[i+"_key"]=res["key"];
+		}else if ($("#"+i).length!=0){
+		  propsApp[i]=$("#"+i).val();
+		}
+	      });
+	      //alert(JSON.stringify(propsApp));
+	      //
+	      localStorage.setItem(storeName, JSON.stringify(propsApp));
+	    }
+	    
+	    function loadSettings(){
+	      var tmp=localStorage.getItem(storeName);
+	      if (tmp!=null)
+		propsApp=JSON.parse(tmp);
+	      else{
+		if (typeApp=='mfc')
+		  propsApp={'phone':'','email':'','password':'',
+		    'urlrepo':'http://mfc.samara.lanit.ru','auto_selectMFC':'','auto_selectMFC_key':'',
+		    'director':false,'lastApp':'user','register':false};
+		else if (typeApp=='tumen')
+		  propsApp={'phone':'','email':'','password':'',
+		    'urlrepo':'http://109.233.228.11','auto_selectMFC':'','auto_selectMFC_key':'',
+		    'director':false,'lastApp':'user','register':false};
+		else if (typeApp=='salehard')
+		  propsApp={'phone':'','email':'','password':'',
+		    'urlrepo':'http://91.242.171.89','auto_selectMFC':'','auto_selectMFC_key':'',
+		    'director':true,'lastApp':'director','register':false};
+		else
+		  propsApp={'phone':'','email':'','password':'',
+		    'urlrepo':'http://192.168.58.135','auto_selectMFC':'МЭР','auto_selectMFC_key':'http://192.168.58.135',
+		    'director':false,'lastApp':'user','register':false};
+	      }
+	      if (propsApp["lastApp"]==undefined)
+		propsApp["lastApp"]="user";
+	      if (propsApp["director"]==undefined)
+		propsApp["director"]=false;
+	      if (propsApp["register"]==undefined)
+		propsApp["register"]=false;
+	      //
+	      $.each( propsAppEt, function ( i, val ) {
+		if (i.substr(0,5)=='auto_'){
+		  var id=i.substring(5);
+		  setValueAutocomplete(id,propsApp[i+"_key"],propsApp[i]);
+		}else if ($("#"+i).length!=0){
+		  $("#"+i).val(propsApp[i]);
+		}
+	      });
+	    }
+	    
+	    function changeSettings(){
+	      for(i in propsAppEt){
+		if (i.substr(0,5)=='auto_'){
+		  var id=i.substring(5);
+		  var res=getValueAutocomplete(id);
+		  if (res["key"]!=propsApp[i+"_key"])
+		    return true;
+		}else if ($("#"+i).length!=0){
+		  if ($("#"+i).val()!=propsApp[i])
+		    return true;
+		}
+	      }
+	      return false;
+	    }
+	    
+	    function getUrlRepo(){
+	      isRequestRepo=true;
+	      return propsApp['urlrepo'];
+	    }
+
+	    function getUrlMfc(){
+	      isRequestRepo=false;
+	      return propsApp['auto_selectMFC_key'];
+	    }
+	    
+	    function validateURL(textval) {
+	      var urlregex = new RegExp(
+		  "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$");
+	      return urlregex.test(textval);
+	    }
+	    
+	    function formatDate(mill) {
+	      if (mill==null)
+		return "";
+	      var date=new Date(mill);
+	      return date.format("dd.mm.yyyy");
+	    }
+	    
+	    function formatDateTime(mill) {
+	      if (mill==null)
+		return "";
+	      var date=new Date(mill);
+	      return date.format("dd.mm.yyyy HH:MM");
+	    }
+	    //serviceInfo
+	    
+	    function serviceInfo_go(){
+	      serviceInfo_changeList(true,'status1');
+	    }
+
+	    function serviceInfo_back(){
+	      $.mobile.changePage('#serviceInfo');
+	      if (modeServiceInfo){
+		$('#serviceInfo_check1').addClass('ui-btn-active');
+		$('#serviceInfo_check2').removeClass('ui-btn-active');
+	      }else{
+		$('#serviceInfo_check2').addClass('ui-btn-active');
+		$('#serviceInfo_check1').removeClass('ui-btn-active');
+	      }
+	    }
+	    
+	    function serviceInfo_changeList(mode,id){
+	      modeServiceInfo=mode;
+	      //$('#'+id)
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/listPack",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], complete:mode},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    $.mobile.changePage('#serviceInfo');
+		    $('#serviceInfo_check1').addClass('ui-btn-active');
+		    $('#serviceInfo_check2').removeClass('ui-btn-active');
+		    //
+		    var html="";
+		    $.each( response.result, function ( i, val ) {
+		      html+=
+		      "<ul data-role='listview' data-ajax='false' data-inset='true' data-theme='d'>"+
+			  "<li data-role='list-divider'>"+val.serviceName+"</li>"+
+			  "<li><a onclick='serviceInfo_selectService(this,false)' authCode='"+val.authCode+"' packNum='"+val.packNum+"'>"+
+			    "<div class=ui-grid-a>"+
+			      "<div class=ui-block-a>Номер комплекта документов:</div>"+
+			      "<div class=ui-block-a><span class='m-value2'>"+val.packNum+"</span></div>"+
+			      "<div class=ui-block-a>Дата обращения:</div>"+
+			      "<div class=ui-block-a><span class='m-value2'>"+formatDate(val.packDate)+"</span></div>"+
+			      "<div class=ui-block-a>Последняя активность в деле:</div>"+
+			      "<div class=ui-block-a><span class='m-value2'>"+formatDate(val.lastActivity)+"</span></div>";
+		     if (val.docVidacha)
+		      html+="<div class=ui-block-a><span style='color:red'>Документы готовы к выдаче</span></div>";
+		     html+="</div>"+
+			  "</a></li>"+
+		      "</ul>";
+		    });
+		    $("#"+id).html(html);
+		    $("#"+id).trigger("create");
+		  }
+		}
+	      });
+	    };
+
+	    function serviceInfo_addPackList(packNum,authCode){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/listPackAdd",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], packNum:packNum, authCode:authCode},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    serviceInfo_changeList(modeServiceInfo,'status1');
+		  }
+		}
+	      });
+	    };
+
+	    function serviceInfo_selectService(obj, director){
+	      packNum=$(obj).attr('packNum');
+	      authCode=$(obj).attr('authCode');
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/infoPack",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], packNum:packNum, authCode:authCode},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    var html="";
+		    var val=response.result;
+		    var id="#serviceInfo_content";
+		    if (director)
+		      id="#director_delo_head";
+		    $(id).html(val.packInfo.serviceName);
+		    //Общая информация
+		    html="<table>";
+		    html+="<tr><td><span class='m-label2'>Номер комплекта документов</span></td></tr><tr><td><span class='m-value'>"+val.packInfo.packNum+"</span></td></tr>";
+		    html+="<tr><td><span class='m-label2'>Цель</span></td></tr><tr><td><span class='m-value'>"+val.goal+"</span></td></tr>";
+		    html+="<tr><td><span class='m-label2'>Жизненные ситуации</span></td></tr>";
+		    html+="<tr>";
+		    for(i in val.typeApplicants){
+		      html+="<td>"+i+"</td>";
+		    }
+		    if (val.typeApplicants.length==0)
+		      html+="<td>Нет жизненных ситуаций</td>";
+		    html+="</tr>";
+		    html+="<tr><td><span class='m-label2'>Заявители</span></td></tr>";
+		    for(i in val.listApplicant){
+		      var el=val.listApplicant[i];
+		      if (el.person==true)
+			html+="<tr><td><span class='m-label4'>ФИО</span></td><td>"+el.name+"</td></tr>";
+		      else
+			html+="<tr><td><span class='m-label4'>Компания</span></td><td>"+el.name+"</td></tr>";
+		      html+="<tr><td><span class='m-label4'>Телефон</span></td><td>"+el.phone+"</td></tr>";
+		    }
+		    html+="<tr><td><span class='m-label2'>Планируемая дата оказания услуги</span></td></tr><tr><td>"+formatDate(val.planDate)+"</td></tr>";
+		    html+="<tr><td><span class='m-label2'>Регистратор</td></span></tr><tr><td>"+val.registrator+"</td></tr>";
+		    html+="<tr><td><span class='m-label2'>Контроллер</td></span></tr><tr><td>"+(val.controller == null ? 'Не задан' : val.controller) +"</td></tr>";
+		    html+="<tr><td><span class='m-label2'>Текущий шаг</td></span></tr><tr><td>"+val.currentAction+"</td></tr>";
+		    html+="</table>";
+		    id="#serviceInfo_first";
+		    if (director)
+		      id="#director_delo";
+		    $(id).html(html);
+		    if (director){
+		      $.mobile.changePage('#director_page_delo');
+		    }else{
+		      //Ход оказания услуги
+		      var sContent = "";
+		      for (var i =0; i < val.packStatus.length; i++){
+			  row=val.packStatus[i];
+			  sContent += 
+			  "<ul data-role='listview' data-ajax='false' data-split-icon='minus' data-split-theme='d' data-inset='true' data-theme='d'>"+
+			  "<li data-role='list-divider'>"+row.name+"</li>"+
+			  "<li>"+
+			  "<table>"+
+			  "<tr><td>Создано</td><td><span class='m-value2'>"+formatDate(row.actCreateDate)+"</span></td></tr>"+
+			  "<tr><td>Начато</td><td><span class='m-value2'>"+formatDate(row.actStartDate)+"</span></td></tr>"+
+			  "<tr><td>Завершено</td><td><span class='m-value2'>"+formatDate(row.actFinishDate)+"</span></td></tr>"+
+			  "<tr><td>Исполнитель</td><td><span class='m-value2'>"+row.workerName+"</span></td></tr>"+
+			  "<tr><td>ОГВ</td><td><span class='m-value2'>"+row.ogv+"</span></td></tr>"+
+			  "<tr><td>Комментарий</td><td><span class='m-value2'>"+row.actComment+"</span></td></tr>"+
+			  "</table>"+
+			  "</li>"+
+			  "</ul>";
+		      }
+		      serviceInfo_showInfo('first',true);
+		      $.mobile.changePage('#menu1_serviceInfo');
+		      //
+		      $("#table-pack-info-data").html(sContent);
+		      $("#table-pack-info-data").trigger("create");
+		      //Документы
+		      var sContent = "";
+		      if (val.packStatus.length==0)
+			sContent="Нет документов";
+		      for (var i =0; i < val.listDocs.length; i++){
+			  row=val.listDocs[i];
+			  sContent +=		      
+			  "<ul data-role='listview' data-ajax='false' data-split-icon='minus' data-split-theme='d' data-inset='true' data-theme='d'>"+
+			  "<li data-role='list-divider'>"+row.name+"</li>"+
+			  "<li>"+
+			    "<div class=ui-grid-a>"+
+			      "<div class=ui-block-a>"+row.fileName+"</div>"+
+			    "</div>"+
+			    "<input attachId="+row.attachId+" onclick='serviceInfo_sendDocToEmail(this)' type='button' value='Отправить на почту' data-mini='true' data-inline='true'>"+
+			  "</li>"+
+			  "</ul>";
+		      }
+		      //
+		      $("#table-pack-info-docs").html(sContent);
+		      $("#table-pack-info-docs").trigger("create");
+		      //Регламент
+		      html="<a code='"+val.packInfo.serviceId+"' onclick='serviceInfo_sendReglament(this)' data-role='button' data-mini='true' data-inline='true'>Отправить регламент на почту</a>";
+		      $("#serviceInfo_reg").html(html);
+		      $("#serviceInfo_reg").trigger("create");
+		      //Оставить сообщение
+		      //Оценка
+		      //first,status,docs,reg,msg,rating
+		    }  
+		  }
+		}
+	      });
+	      //
+	    }
+
+	    function serviceInfo_sendDocToEmail(obj){
+	      attachId=$(obj).attr('attachId');
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/sendDocToEmail",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], packNum:packNum, authCode:authCode, email:propsApp['email'],attachId:attachId},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  checkError(response);
+		}
+	      });
+	    }
+
+	    function serviceInfo_sendReglament(obj){
+	      code=$(obj).attr('code');
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/sendReglamentToEmail",
+	      type : "GET",
+	      data : {code:code, email:propsApp['email']},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  checkError(response);
+		}
+	      });
+	    }
+	    
+	    function serviceInfo_saveMsgPack(msg){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/saveMsgPack",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], packNum:packNum, authCode:authCode, comment:msg},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response))
+		    serviceInfo_showInfo('first',false);
+		}
+	      });
+	    }
+	    
+	    //okgu
+	    function serviceInfo_getOkgu(){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/okgu",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], packNum:packNum, authCode:authCode},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    okgu=response;
+		    okgu_current=0;
+		    okgu_answer={};
+		    if (ddd.result.dateTime!=undefined){
+		      $('#okgu_all').css('display','none');
+		      $('#okgu_result').css('display','block');
+		      //
+		      var val=response.result;
+		      var html="<table>"+
+		      "<tr><td><span class='m-label'>Дата/Время:</span></td><td><span class='m-value'>"+formatDateTime(val.dateTime)+"</span></td></tr>"+
+		      "<tr><td><span class='m-label'>Комметарий:</span></td><td><span class='m-value'>"+(val.textComment==null?'':val.textComment)+"</span></td></tr>"+
+		      "</table>";
+		      html+="<table><tr><td><span class='m-label2'>Вопросы:</span></td><tr>";
+		      for(i in val.questions){
+			var el=val.questions[i];
+			html+="<tr><td><span class='m-label2'>"+el.name+"</span></td></tr>";
+			var st="";
+			for(j in el.answers){
+			  var el1=el.answers[j];
+			  if (st!="") st+="<br/>";
+			  st+="<span class='m-value2'>"+el1.name+"</span>";
+			}
+			html+="<tr><td>"+st+"</td></tr>";
+		      }
+		      html+="</table>";
+		      $('#okgu_result').html(html);
+		    }else{
+		      $('#okgu_all').css('display','block');
+		      $('#okgu_result').css('display','none');
+		      serviceInfo_okgu(okgu_current);
+		    }
+		  }
+		}
+	      });
+	    }
+
+	    //okgu
+	    function serviceInfo_sendResultOKGU(){
+	      var com=$('#commentOKGU').val();
+	      var res={};
+	      res["answers"]=okgu_answer;
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/sendResultOKGU",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], packNum:packNum, authCode:authCode, 
+		answers: JSON.stringify(res),inquirerId:okgu.result.inquirerId, comment:com},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response))
+		    serviceInfo_showInfo('first',false);
+		}
+	      });
+	    }
+	    
+	    function showMessage(msg){
+	      alert(msg);
+	      
+	      //$.mobile.showPageLoadingMsg("a", msg, true);
+	      //setTimeout( $.mobile.hidePageLoadingMsg, 3000 );
+	      
+	      //$('#dialogErrorMsg').html(msg);
+	      //$.mobile.changePage( '#dialogError', { role: 'dialog',transition:'none' } );		  
+	    }
+	    
+	    //Обработка ошибок запроса
+	    function formatErrorMessage(jqXHR, exception) {
+		//alert(jqXHR+","+jqXHR.status+","+jqXHR.responseText+","+exception);
+		if (exception == 'timeout')
+		    return ('Время запроса истекло. Проверьте адрес репозитария.');
+		else
+		    return ('При получении данных от сервера произошла ошибка.');
+/*		if (exception == 'parsererror') {
+		    return ('JSON разбор полученных данных не удался.');
+		} else if (exception == 'timeout') {
+		    return ('Время запроса истекло. Проверьте адрес репозитария.');
+		} else if (exception == 'abort') {
+		    return ('Ajax запрос прерван.');
+		} else if (jqXHR.status == 0) {
+		    return ('Нет подключения.\nПроверьте ваше соединение с сетью.');
+		} else if (jqXHR.status == 404) {
+		    return ('Запрашиваемя страница не найдена. [404]');
+		} else if (jqXHR.status == 500) {
+		    return ('Внутрення ошибка сервера [500].');
+		}else{
+		    return ('Непредвиденная ошибка.\n' + jqXHR.responseText);
+		}*/
+	    }	    
+	    
+	    $.ajaxSetup( {
+	      timeout : 15000,
+	      beforeSend : 
+		function(jqXHR, settings){
+		  if (isRequestRepo&&emptyValue(propsApp['urlrepo'])){
+		    showMessage('Необходимо задать адрес репозитария');
+		    return false;
+		  }
+		  if (!isRequestRepo&&emptyValue(propsApp['auto_selectMFC_key'])){
+		    showMessage('Необходимо выбрать МФЦ');
+		    return false;
+		  }
+		  $.mobile.loading('show', {
+		    text: 'Загрузка',
+		    textVisible: false,
+		    theme: 'b',
+		    html: ""
+		  });
+		},
+	      error : 
+		function(xhr, status, error) {
+		  console.error(status);
+		  //
+		  $.mobile.loading('hide');
+		  //
+		  var responseTitle= $(xhr.responseText).filter('title').get(0);
+		  var err=$(responseTitle).text() + "\n" + formatErrorMessage(xhr, status);
+		  showMessage(err);
+		},
+	      complete :
+		function (xhr,status){
+		  if (status=='success'){
+		    //$.mobile.loading('hide');
+		    //showMessage(response.errorMsg);		    
+		  }  
+		}
+	    });
+	    
+	    function checkError (response){
+	      ddd=response;
+	      $.mobile.loading('hide');
+	      if (response.register!=null){
+		if (response.register!=propsApp['register']){
+		  propsApp['register']=response.register;
+		  saveSattings();
+		}
+	      }
+	      if (response.error!=0){
+		showMessage(response.errorMsg);
+		return false;
+	      }
+	      if (response.director!=null){
+		if (response.director!=propsApp['director']){
+		  propsApp['director']=response.director;
+		  saveSattings();
+		}
+		if (typeApp!='salehard'){
+		  if (response.director)
+		    $('#main_check_app').css('display','block');
+		  else  
+		    $('#main_check_app').css('display','none');
+		}    
+	      }
+	      if (!emptyValue(response.infoMsg))
+		showMessage(response.infoMsg);
+	      return true;
+	    }
+    
+	    $( document ).on( "pageinit", "#settings", function() {
+	      $('#selectMFCdiv a.ui-input-clear').click(function () {
+		var el=$(this).closest('form').find('input');
+		el.val("");
+		el.attr("key","");
+		el.trigger('keyup');
+	      });
+	      //
+	      loadSettings();
+	      //$("#phone").inputmask("mask", {"mask": "89999999999","placeholder": "8__________" });
+	      //$("#phone").mask("89999999999");
+	    });
+
+	    function disableMenuItem(){
+	      if (!propsApp['register']){
+		if (!$("#item_callBack").hasClass("ui-disabled")){
+		  $("#item_callBack").addClass("ui-disabled");
+		  $("#item_records").addClass("ui-disabled");
+		  $("#item_home").addClass("ui-disabled");
+		  //
+		  $("#register_warn").css("display","block");
+		}  
+	      }else{
+		if ($("#item_callBack").hasClass("ui-disabled")){
+		  $("#item_callBack").removeClass("ui-disabled");
+		  $("#item_records").removeClass("ui-disabled");
+		  $("#item_home").removeClass("ui-disabled");
+		  //
+		  $("#register_warn").css("display","none");
+		}  
+	      }
+	    }
+	    
+	    $( document ).on( "pagebeforeshow", "#main_page", function() {
+	      if (deviceready)
+		disableMenuItem();
+	    });
+	    
+	    $( document ).on( "pageinit", "#main_page", function() {
+		    $( "#selectMFC" ).on( "listviewbeforefilter", function ( e, data ) {
+			var $ul = $( this ),
+				$input = $( data.input ),
+				value = $input.val(),
+				html = "";
+			$ul.html( "" );			
+			if (value){
+			  //if (propsApp["auto_selectMFC_key"]=='')
+			  $ul.html( "" );
+			  $ul.html( "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>" );
+			  $ul.listview( "refresh" );
+			  //  
+			  $.ajax({
+			  url : getUrlRepo()+"/rest/mobileServices/listSystems",
+			  type : "GET",
+			  data : {search:value},
+			  contentType : "application/json",
+			  dataType: "jsonp",
+			  success :
+			    function(response) {
+			      if (checkError(response)){			      
+				$.each( response.result, function ( i, val ) {
+					html += "<li url='"+val.url+"'><span class='word_wrap'>" + val.nameRegion + "</span></li>";
+				});
+				$ul.html( html );
+				$ul.listview( "refresh" );
+				$ul.trigger( "updatelayout");
+				//
+				$("#selectMFCdiv li").click(function () {
+				  var el=$(this).closest('[data-role=listview]').prev('form').find('input');
+				  el.val($(this).text());
+				  el.attr('key',$(this).attr('url'));
+				  $(this).closest('[data-role=listview]').children().addClass('ui-screen-hidden');
+				});
+			      }
+			    }
+			  });
+			}
+		    });
+		    $( "#callBackOwner" ).on( "listviewbeforefilter", function ( e, data ) {
+			var $ul = $( this ),
+				$input = $( data.input ),
+				value = $input.val(),
+				html = "";
+			$ul.html( "" );			
+			if (value){
+			  $ul.html( "" );
+			  $ul.html( "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>" );
+			  $ul.listview( "refresh" );
+			  //  
+			  $.ajax({
+			  url : getUrlMfc()+"/rest/mobileServices/listOrgUnit",
+			  type : "GET",
+			  data : {search:value},
+			  contentType : "application/json",
+			  dataType: "jsonp",
+			  success :
+			    function(response) {
+			      if (checkError(response)){			      
+				$.each( response.result, function ( i, val ) {
+					html += "<li code='"+val.value+"'><span class='word_wrap'>" + val.name + "</span></li>";
+				});
+				$ul.html( html );
+				$ul.listview( "refresh" );
+				$ul.trigger( "updatelayout");
+				//
+				$('#callBackOwnerDiv a.ui-input-clear').click(function () {
+				  var el=$(this).closest('form').find('input');
+				  el.val("");
+				  el.attr("key","");
+				  el.trigger('keyup');
+				});
+				$("#callBackOwnerDiv li").click(function () {
+				  var el=$(this).closest('[data-role=listview]').prev('form').find('input');
+				  el.val($(this).text());
+				  el.attr('key',$(this).attr('code'));
+				  $(this).closest('[data-role=listview]').children().addClass('ui-screen-hidden');
+				});
+			      }
+			    }
+			  });
+			}
+		    });
+		    if (!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
+			init();
+		    };
+	    });
+
+	    function checkRegister(){
+	      saveSattings();
+	      //
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/checkRegister",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password']},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response))
+		    showMessage("Реквизиты настроены верно");
+		}
+	      });
+	    };
+
+	    function register(){
+	      saveSattings();
+	      //
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/register",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password']},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  checkError(response);
+		}
+	      });
+	    };
+	    
+	    //serviceListInfo
+	    
+	    var categoryService;
+	    var ownerService;
+	    
+	    function serviceListInfo_go(owner){
+	      ownerService=owner;
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/listCategory",
+	      type : "GET",
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    var html="";
+		    $ul=$('#serviceListInfo_listCat');
+		    //
+		    $.each( response.result, function ( i, val ) {
+			    html += "<li><a code='"+val.value+"' onclick='serviceListInfo_selectCat(this)'><span class='word_wrap'>" + val.name + "</span></a></li>";
+		    });
+		    //
+		    $.mobile.changePage('#serviceListInfo');
+		    //	
+		    $ul.html( html );
+		    $ul.listview( "refresh" );
+		  }  
+		}
+	      });
+	    }
+	    
+	    function serviceListInfo_selectCat(el){
+	      var el = $(el);
+	      categoryService=el.attr('code');
+	      $('#serviceListInfo1_cat').html(el.text());
+	      serviceListInfo_searchService('');
+	    }
+
+	    function serviceListInfo_searchService(val){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/listServices",
+	      type : "GET",
+	      data : {search:val,category:categoryService,owner:ownerService},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    var html="";
+		    $ul=$('#selectService');
+		    //
+		    $.each( response.result, function ( i, val ) {
+			    html += "<li><a code='"+val.code+"' onclick='serviceListInfo_selectService(this)'><span class='word_wrap'>" + val.name + "</span></a></li>";
+		    });
+		    $.mobile.changePage('#serviceListInfo1');
+		    //
+		    $ul.html( html );
+		    $ul.listview( "refresh" );
+		    //$ul.trigger( "updatelayout");
+		  }  
+		}
+	      });
+	    }
+
+	    function serviceListInfo_selectService(el){
+	      var el = $(el);
+	      serviceListInfo_getService(el.attr('code'));
+	    }
+	    
+	    var myScroll=null;
+	    function serviceListInfo_getService(code){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/serviceInfo",
+	      type : "GET",
+	      data : {code:code},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    $.mobile.changePage('#serviceListInfo2');
+		    var html="";
+		    $('#serviceListInfo2_Service').html(response.result);
+		    $('#serviceListInfo2_Service_b1').attr("code",code);
+		    $('#serviceListInfo2_Service a[docType]').bind("click", function(){serviceListInfo_sendDoc(this)});
+		    //
+/*		    if (myScroll==null){
+		      myScroll = new iScroll('wrapper', { zoom:true });
+		      document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+		    }*/
+		  }
+		}
+	      });
+	    }
+	    
+	    function serviceListInfo_sendDoc(obj){
+	      code=$(obj).attr('docType');
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/sendSrvDocToEmail",
+	      type : "GET",
+	      data : {code:code, email:propsApp['email']},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  checkError(response);
+		}
+	      });
+	    }
+	    
+	    //callBack
+	    function callBack_go(){
+	      callBack_list();
+	    }
+	    
+	    function callBack_send(){
+	      var owner=getValueAutocomplete('callBackOwner')["key"];
+	      if (emptyValue(owner)){
+		showMessage('Необходимо выбрать филиал');
+		return;
+	      }
+	      var msg=$('#msgCallBack').val();
+	      if (emptyValue(msg)){
+		showMessage('Текст сообщения должен быть заполнен');
+		return;
+	      }
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/requestCallBack",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], owner:owner, comment:msg},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response))
+		    callBack_go();
+		}
+	      });
+	    }
+	    
+	    function callBack_list(){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/requestCallBackInfo",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password']},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    $.mobile.changePage('#callBack');
+		    //
+		    var html="";
+		    $.each( response.result, function ( i, val ) {
+		      html+=
+		      "<ul data-role='listview' data-ajax='false' data-split-icon='minus' data-split-theme='d' data-inset='true' data-theme='d'>"+
+			  "<li data-role='list-divider'>"+val.ownerName+"</li>"+
+			  "<li><a href='#'>"+
+			    "<div class=ui-grid-a>"+
+			      "<div class=ui-block-a>Телефон: "+val.phone+"</div>"+
+			      "<div class=ui-block-a>Дата/время заявки</div>"+
+			      "<div class=ui-block-a><span class='m-value2'>"+formatDateTime(val.createDate)+"</span></div>"+
+			      "<div class=ui-block-a>С вами свяжуться в</div>"+
+			      "<div class=ui-block-a><span class='m-value2'>"+(val.callDate!=null?formatDateTime(val.callDate):"[не задано]")+"</span></div>"+
+			      "<div class=ui-block-a>Ваш комментарий</div>"+
+			      "<div class=ui-block-a><span class='m-value2'>"+(val.msg!=null?val.msg:"")+"</span></div>"+
+			      "<div class=ui-block-a>Комментарий сотрудника</div>"+
+			      "<div class=ui-block-a><span class='m-value2'>"+(val.msg2!=null?val.msg2:"[не задан]")+"</span></div>"+
+			      "<div class=ui-block-a>Статус: <span style='color:red'>"+val.rstatusName+"</style></div>"+
+			    "</div>"+
+			    "<a requestId='"+val.id+"' onclick='dialog_callBack_cancel(this)' data-rel='popup' data-position-to='window' data-transition='pop'>Отменить</a>"+
+			  "</li>"+
+		      "</ul>";
+		    });
+		    $("#listCallBack").html(html);
+		    $("#listCallBack").trigger("create");
+		  }
+		}
+	      });
+	    }
+	    
+	    function dialog_callBack_cancel(val){
+	      requestId=$(val).attr('requestId');
+	      $("#dialog_callBack_cancel").popup("open");
+	    }
+	    
+	    function callBack_cancel(){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/requestCallBackCancel",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], requestId:requestId},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response))
+		    callBack_go();
+		}
+	      });
+	      requestId=null;
+	    }
+	    
+	    //records
+	    
+	    var recordsArr={};
+	    var recordsShedule;
+	    var recordsDay;
+	    var recordsTime;
+	    var recordsAuthCode;
+	    var recordsNumber;
+	    
+	    function checkError2 (response){
+	      ddd=response;
+	      $.mobile.loading('hide');
+	      if (response.statusOperation=="error"){
+		showMessage(response.errorMessage);
+		return false;
+	      }
+	      if (!emptyValue(response.message))
+		showMessage(response.message);
+	      return true;
+	    }
+	    
+	    function records_go(mode){
+	      if (mode==0)
+		records_listRecords();
+	      else
+		records_searchOwner(null);
+	    }
+	    
+	    function records_listRecords(){
+	      //$('#'+id)
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/listRecords",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password']},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    var html="";
+		    $.each( response.result, function ( i, val ) {
+		      var bb=val.bookedTime;
+		      html+=
+		      "<ul data-role='listview' data-ajax='false' data-split-icon='minus' data-split-theme='d' data-inset='true' data-theme='d'>"+
+			  "<li data-role='list-divider'>"+bb.serviceShortName+"</li>"+
+			  "<li><a href='#'>"+
+			    "<div class=ui-grid-a>"+
+			      "<div class=ui-block-a>Время: "+formatDateTime(bb.startBookedDate)+"</div>"+
+			      "<div class=ui-block-a>Номер: "+bb.bookingNumber+"</div>"+
+			      "<div class=ui-block-a>Код авторизации: "+bb.authCode+"</div>"+
+			    "</div>"+
+			    "<a authCode='"+bb.authCode+"' number='"+bb.bookingNumber+"' onclick='dialog_records_cancel(this)' data-rel='popup' data-position-to='window' data-transition='pop'>Отменить</a>"+
+			  "</li>"+
+		      "</ul>";
+		    });
+		    $.mobile.changePage('#records_page_list');
+		    $("#records_list").html(html);
+		    $("#records_list").trigger("create");
+		    //
+		    $('#clientName').val(response.firstName);
+		    $('#clientSurname').val(response.lastName);
+		  }
+		}
+	      });
+	    };
+	    
+	    function dialog_records_cancel(val){
+	      recordsAuthCode=$(val).attr('authCode');
+	      recordsNumber=$(val).attr('number');
+	      $("#dialog_records_cancel").popup("open");
+	    }
+	    
+	    function records_cancel(val){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/cancelBooking",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], bookingNumber:recordsNumber,authCode:recordsAuthCode},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response))
+		    records_go(0);
+		}
+	      });
+	    }
+	    
+	    function records_searchOwner(val){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/eqOperation/owners",
+	      type : "GET",
+	      data : {search:val},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError2(response)){
+		    var html="";
+		    $ul=$('#records_owners');
+		    //
+		    $.each( response.listOwner, function ( i, val ) {
+			    html += "<li><a code='"+val.value+"' onclick='records_selectOwner(this)'><span class='word_wrap'>" + val.name + "</span></a></li>";
+		    });
+		    if (response.listOwner.length==0)
+		      html="<h3>Нет филиалов для предварительной записи</h3>";
+		    $.mobile.changePage('#records_page_owner');
+		    //
+		    $ul.html( html );
+		    $ul.listview( "refresh" );
+		    //$ul.trigger( "updatelayout");
+		  }  
+		}
+	      });
+	    }
+	    
+	    function records_selectOwner(el){
+	      var el = $(el);
+	      recordsArr["recordsOwner"]=el.attr('code');
+	      recordsArr["recordsOwnerName"]=el.text();
+	      //$('#serviceListInfo1_cat').html(el.text());
+	      records_searchService();
+	    }
+
+	    function records_searchService(){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/eqOperation/leafService",
+	      type : "GET",
+	      data : {owner:recordsArr["recordsOwner"]},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError2(response)){
+		    var html="";
+		    $ul=$('#records_services');
+		    //
+		    $.each( response.listService, function ( i, val ) {
+			    html += "<li><a code='"+val.id+"' onclick='records_selectService(this)'><span class='word_wrap'>" + val.name + "</span></a></li>";
+		    });
+		    $.mobile.changePage('#records_page_service');
+		    //
+		    $ul.html( html );
+		    $ul.listview( "refresh" );
+		    //$ul.trigger( "updatelayout");
+		  }  
+		}
+	      });
+	    }
+	    
+	    function records_selectService(el){
+	      var el = $(el);
+	      recordsArr["recordsServiceId"]=el.attr('code');
+	      recordsArr["recordsServiceIdName"]=el.text();
+	      //$('#serviceListInfo1_cat').html(el.text());
+	      records_Shedule();
+	    }
+
+	    function createDate(year, month, day){
+	      var date=new Date(year, month, day);
+	      return date.format("dd mmmm");
+	    }
+
+	    function records_Shedule(){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/eqOperation/sheduleService",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], owner:recordsArr["recordsOwner"], serviceId:recordsArr["recordsServiceId"]},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError2(response)){
+		    recordsShedule=response.schedule;
+		    //
+		    var html="";
+		    $ul=$('#records_day');
+		    //
+		    $.each( response.schedule, function ( i, val ) {
+		      if (!val.notWorking&&val.timeIntervals.length>0)
+			    html += "<a code='"+i+"' onclick='records_selectDay(this)' data-role='button' data-theme='b'>"+
+			    createDate(val.year, val.month, val.day)+"</a>";
+		    });
+		    $.mobile.changePage('#records_page_day');
+		    //
+		    $ul.html( html );
+		    $ul.trigger("create");
+		  }		
+		}
+	      });
+	    }
+	    
+	    function createTime(hour, minute){
+	      var st="";
+	      if ((minute+"").length==1)
+		st="0";
+	      return hour+":"+st+minute;
+	    }
+	    
+	    function records_selectDay(el){
+	      var el = $(el);
+	      //Порядковый номер дня
+	      recordsDay=el.attr('code');
+	      var day=recordsShedule[recordsDay];
+	      var html="";
+	      $ul=$('#records_time');
+	      //
+	      var j=0;
+	      $.each( day.timeIntervals, function ( i, val ) {
+		if (val.status=="FREE_FOR_BOOKING"){
+		  if (j % 2 == 0)
+		    html+="<tr>";
+		  html += "<td><a code='"+i+"' onclick='records_selectTime(this)' data-role='button' data-theme='b'>"+
+		  createTime(val.startHour, val.startMinute)+"</a></td>";
+		  if (j % 2 != 0)
+		    html+="</tr>";
+		  j=j+1;
+		}
+		if (j % 2 == 0)
+		  html+="</tr>";
+	      });
+	      html="<table>"+html+"</table>";
+	      $.mobile.changePage('#records_page_time');
+	      //
+	      $ul.html( html );
+	      $ul.trigger("create");
+	    }
+
+	    function records_selectTime(el){
+	      var el = $(el);
+	      //Порядковый номер времени
+	      recordsTime=el.attr('code');
+	      //
+	      var day=recordsShedule[recordsDay];
+	      var time=day.timeIntervals[recordsTime];
+	      var html="<table>"+
+	      "<tr><td><span class='m-label'>Филиал:</span></td><td><span class='m-value'>"+recordsArr["recordsOwnerName"]+"</span></td></tr>"+
+	      "<tr><td><span class='m-label'>Услуга:</span></td><td><span class='m-value'>"+recordsArr["recordsServiceIdName"]+"</span></td></tr>"+
+	      "<tr><td><span class='m-label'>День:</span></td><td><span class='m-value'>"+createDate(day.year, day.month, day.day)+"</span></td></tr>"+
+	      "<tr><td><span class='m-label'>Время:</span></td><td><span class='m-value'>"+createTime(time.startHour, time.startMinute)+"</span></td></tr>"+
+	      "</table>";
+	      $ul=$('#records_total');
+	      $ul.html( html );
+	      //
+	      $.mobile.changePage('#records_page_total');
+	    }
+	    
+	    function records_bookedTime(){
+	      var clientName=$('#clientName').val();
+	      var clientSurname=$('#clientSurname').val();
+	      if (emptyValue(clientName)||emptyValue(clientSurname)){
+		showMessage('Поля имя и фамилия должны быть заполнены');
+		return;
+	      }
+	      var day=recordsShedule[recordsDay];
+	      var time=day.timeIntervals[recordsTime];
+	      var bookDate=new Date(day.year,day.month,day.day,time.startHour,time.startMinute);
+	      //alert(bookDate);
+	      //return;
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/bookedTime",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], owner:recordsArr["recordsOwner"], serviceId:recordsArr["recordsServiceId"], clientName:clientName, clientSurname:clientSurname, 
+		minute:time.startMinute, hour:time.startHour, day:day.day, month:day.month, year:day.year},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    records_go(0);
+		  }
+		}
+	      });
+	    }
+	    
+	    //director
+	    function director_status_mfc(owner){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/statusMFC",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], owner:owner, typeApp:typeApp},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    var html="";
+		    $ul=$('#director_status');
+		    //
+		    $.each( response.result, function ( i, val ) {
+		      var st="";
+		      if (val.detail!=null&&val.detail.length>0)
+			st="<a>"+val.name+"</a>";
+		      else
+			st=val.name;
+		      html += "<tr><td class='numberCircle'>"+val.value+"</td><td><span class='m-label4'>"+st+"</span></td></tr>";
+		    });
+		    $.mobile.changePage('#director_page_status');
+		    //
+		    html="<table>"+html+"</table>";
+		    $ul.html( html );
+		    //
+		    $('#director_page_status_ownerName').html(recordsArr["recordsOwnerName"]);
+		    //$ul.trigger("create");
+		  }		
+		}
+	      });
+	    }
+
+	    function director_analytic_mfc(owner,val){
+	      var period;
+	      if (val==null)
+		period=$('#analytic-period').val();
+	      else
+		period=$(val).val();
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/analyticMFC",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'],period:period, typeApp:typeApp, owner:owner},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    var html="";
+		    $ul=$('#director_analytic');
+		    //
+		    $.each( response.result, function ( i, val ) {
+		      var st1="";
+		      if (val.detail!=null&&val.detail.length>0)
+			st1="<a pos='"+i+"' href='#' onclick='show_detail(this)'>"+val.name+"</a>";
+		      else
+			st1=val.name;
+		      var st="";
+		      if (val.unit!=null)
+			st="<br/>/"+val.unit+"/";
+//		      html += "<tr><td>"+val.value+"</td><td>"+val.name+st+"</td></tr>";
+		      html += "<tr><td class='numberCircle'>"+val.value+"</td><td><span class='m-label4'>"+st1+"</span>"+st+"</td></tr>";
+		      
+		    });
+		    $.mobile.changePage('#director_page_analytic');
+		    //
+		    html="<table>"+html+"</table>";
+		    $ul.html( html );
+		    //
+		    $('#director_page_analytic_ownerName').html(recordsArr["recordsOwnerName"]);
+		    //$ul.trigger("create");
+		  }		
+		}
+	      });
+	    }
+
+	    function show_detail(obj){
+	      var pos=$(obj).attr('pos');
+	      var html="";
+	      $.each(ddd.result[pos].detail, function ( i, val ) {
+		html += "<tr><td class='numberCircle'>"+val[0]+"</td><td><span class='m-label4'>"+val[1]+"</span></td></tr>";
+	      });
+	      $.mobile.changePage('#director_page_analytic_detail');
+	      //
+	      html="<table>"+html+"</table>";
+	      $('#director_analytic_detail').html(html);
+	      //
+	      $('#director_page_analytic_detail_ownerName').html(recordsArr["recordsOwnerName"]);
+	      $('#director_page_analytic_detail_head').html($(obj).text());
+	      $('#director_page_analytic_detail_analytic').html();
+	    }
+	    
+	    function director_search_pack(packNum){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/searchPack",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], packNum:packNum},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    if (response.result.length==0){
+		      alert("По вашему запросу ничего не найдено");
+		      return;
+		    }
+		    var html="";
+		    $.each( response.result, function ( i, val ) {
+		      html+=
+		      "<ul data-role='listview' data-ajax='false' data-inset='true' data-theme='d'>"+
+			  "<li data-role='list-divider'>"+val.serviceName+"</li>"+
+			  "<li><a onclick='serviceInfo_selectService(this,true)' authCode='"+val.authCode+"' packNum='"+val.packNum+"'>"+
+			    "<div class=ui-grid-a>"+
+			      "<div class=ui-block-a>Филиал:</div>"+
+			      "<div class=ui-block-a><span class='m-value2'>"+(val.owner==null?"не задан":val.owner)+"</span></div>"+
+			      "<div class=ui-block-a>Номер комплекта документов:</div>"+
+			      "<div class=ui-block-a><span class='m-value2'>"+val.packNum+"</span></div>"+
+			      "<div class=ui-block-a>Дата обращения:</div>"+
+			      "<div class=ui-block-a><span class='m-value2'>"+formatDate(val.packDate)+"</span></div>"+
+			      "<div class=ui-block-a>Последняя активность в деле:</div>"+
+			      "<div class=ui-block-a><span class='m-value2'>"+formatDate(val.lastActivity)+"</span></div>"+
+			    "</div>"+
+			  "</a></li>"+
+		      "</ul>";
+		    });
+		    $.mobile.changePage('#director_page_delo_list');
+		    //
+		    $("#director_delo_list").html(html);
+		    $("#director_delo_list").trigger("create");
+		  }
+		}
+	      });
+	    };
+	    
+	    var pageMode;
+	    function page_go(page){
+	      pageMode=page;
+	      if (pageMode=='status')
+		$('#director_select_owner_head').html("Состояние МФЦ");
+	      else if (pageMode=='analytic')
+		$('#director_select_owner_head').html("Аналитика");
+	      else if (pageMode=='eq')
+		$('#director_select_owner_head').html("Состояние ЭО");
+	      else if (pageMode=='contacts')
+		$('#director_select_owner_head').html("Контакты МФЦ");
+	      else if (pageMode=='serviceListInfo')
+		$('#director_select_owner_head').html("Информация");
+	      $('#director_select_owner_input').val("");
+	      director_searchOwner(null);
+	    }
+	    
+	    function director_searchOwner(val){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/listOrgUnit",
+	      type : "GET",
+	      data : {search:val},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    var html="";
+		    $ul=$('#director_owners');
+		    //
+		    $.each( response.result, function ( i, val ) {
+			    html += "<li><a code='"+val.value+"' onclick='director_select_owner(this)'><span class='word_wrap'>" + val.name + "</span></a></li>";
+		    });
+		    $.mobile.changePage('#director_select_owner');
+		    //
+		    $ul.html( html );
+		    $ul.listview( "refresh" );
+		    //$ul.trigger( "updatelayout");
+		  }  
+		}
+	      });
+	    }
+	    
+	    function director_select_owner(el){
+	      var el = $(el);
+	      recordsArr["recordsOwner"]=el.attr('code');
+	      recordsArr["recordsOwnerName"]=el.text();
+	      if (pageMode=='status')
+		director_status_mfc(el.attr('code'));
+	      else if (pageMode=='analytic')
+		director_analytic_mfc(el.attr('code'),null);
+	      else if (pageMode=='eq')
+		status_eq(el.attr('code'));
+	      else if (pageMode=='contacts')
+		contacts_mfc(el.attr('code'));
+	      else if (pageMode=='serviceListInfo')
+		serviceListInfo_go(el.attr('code'));
+	    }
+	    
+	    //ЭО
+	    function status_eq(owner){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/statusEQ",
+	      type : "GET",
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'], owner:owner},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    $.mobile.changePage('#status_eq_page');
+		    //
+		    $('#status_eq_detail').html("Текущая длина очереди "+response.result);
+		    $('#status_eq_page_ownerName').html(recordsArr["recordsOwnerName"]);		    
+		  }		
+		}
+	      });
+	    }
+
+	    var locations;
+	    
+	    //Контакты МФЦ
+	    function contacts_mfc(owner){
+	      $.ajax({
+	      url : getUrlMfc()+"/rest/mobileServices/infoOrgUnit",
+	      type : "GET",
+	      data : {owner:owner},
+	      contentType : "application/json",
+	      dataType: "jsonp",
+	      success :
+		function(response) {
+		  if (checkError(response)){
+		    var r=response.result;
+		    locations=r.locations;
+		    //
+		    var html="<table>"+
+		    "<tr><td><span class='m-label2'>Адрес:</span></td><td><span class='m-value'>"+(r.addresses!=null?r.addresses:"не задано")+"</span></td></tr>";
+		    if (r.locations!=null&&r.locations.length>0)
+		      html+="<tr><td></td><td><a href='' onclick='go_contacts_mfc_map()'>Показать на карте</a></td></tr>";
+		    html+="<tr><td><span class='m-label2'>Контакты:</span></td><td>";
+		    if (r.phones==null||r.phones.length==0)
+		      html+="<span class='m-value'>не задано</span></td>";
+		    else{
+		      for(i in r.phones){
+			var el=r.phones[i];
+			html+="<span class='m-value'>"+el+"</span><a href='tel:"+el+"'><img src='img/call_start.png'></a><br/>";
+		      }
+		    }
+		    html+="</td></tr>"+
+		    "<tr><td><span class='m-label2'>Режим работы:</span></td><td><span class='m-value'>"+(r.workMode!=null?r.workMode:"не задано")+"</span></td></tr>"+
+		    "</table>";
+		    $.mobile.changePage('#contacts_mfc_page');
+		    //
+		    $('#contacts_mfc_page_detail').html(html);
+		    $('#contacts_mfc_page_ownerName').html(recordsArr["recordsOwnerName"]);
+		  }
+		}
+	      });
+	    }
+	    
+	    function go_contacts_mfc_map(){
+	      $.mobile.changePage('#contacts_mfc_map_page');
+	      if (locations.length==0)
+		return;
+	      var el=locations[0];
+	      var point = new google.maps.LatLng(el[0], el[1]);
+	      //
+	      var myOptions = {
+		  zoom: 13,
+		  center: point,
+		  mapTypeId: google.maps.MapTypeId.ROADMAP
+	      };
+	      var map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
+	      for(i in locations){
+		var el=locations[i];
+		var point = new google.maps.LatLng(el[0], el[1]);
+		var marker = new google.maps.Marker({position: point,map: map});						
+		google.maps.event.addListener(marker, 'click', function() {
+		    alert(recordsArr["recordsOwnerName"]);
+		});
+	      }
+	    }
+
+/*	    
+var map = null;
+var markerArray = []; //create a global array to store markers
+
+function initialize() {
+    var myOptions = {
+        zoom: 5,
+        center: new google.maps.LatLng(34, 32),
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+        },
+        navigationControl: true,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+    google.maps.event.addListener(map, 'click', function() {
+        infowindow.close();
+    });
+    // Add markers to the map
+    // Set up markers based on the number of elements within the myPoints array
+    var marker = new google.maps.Marker({position: point,map: map});
+    for (var i = 0; i < locations.length; i++) {
+        createMarker(new google.maps.LatLng(locations[i][1], locations[i][2]),locations[i][0], locations[i][3], locations[i][4]);
+    }
+    mc.addMarkers(markerArray, true);
+}
+
+var infowindow = new google.maps.InfoWindow({
+    size: new google.maps.Size(150, 50)
+});
+
+function createMarker(latlng, myTitle, myNum, myIcon) {
+    var contentString = myTitle;
+    var marker = new google.maps.Marker({
+        position: latlng,
+        map: map,
+        icon: myIcon,
+        zIndex: Math.round(latlng.lat() * -100000) << 5,
+        title: myTitle
+    });
+    google.maps.event.addListener(marker, 'click', function() {
+        infowindow.setContent(contentString);
+        infowindow.open(map, marker);
+    });
+    markerArray.push(marker); //push local var marker into global array
+}
+*/	    
+	    
+        </script>
+        
+	<style type="text/css">
+/*
+	    #wrapper {
+		    position:absolute; z-index:1;
+		    top:45px; bottom:48px; left:0;
+		    width:100%;
+		    background:#aaa;
+		    overflow:auto;
+	    }
+
+	    #scroller {
+		    position:relative;
+		    -webkit-tap-highlight-color:rgba(0,0,0,0);
+
+		    width:640px;
+		    padding:0;
+		    background:#fff;
+	    }
+*/
+	    .header_m {
+	      text-align:center;
+	    }
+	    
+	    .m-label {
+	      vertical-align: top;
+	      font-weight: bold;
+	      width: 115px;
+	      float: left;
+	      /* padding: 5px; */
+	      margin-top: 3px;
+	      clear: left;	    
+	    }
+
+	    .m-label2 {
+	      vertical-align: top;
+	      font-weight: bold;
+	      float: left;
+	      /* padding: 5px; */
+	      margin-top: 3px;
+	      clear: left;	    
+	    }
+	    
+	    .m-label4 {
+	      vertical-align: top;
+	      font-weight: bold;
+	      width: 200px;
+	      float: left;
+	      padding: 5px;
+	      margin-top: 3px;
+	      clear: left;	    
+	    }
+	    
+	    .m-value {
+	    }
+
+	    .m-value2 {
+	      font-style: italic;	  
+	      white-space : normal;
+	    }
+	    
+	    .numberCircle {
+		padding: 8px;
+		color: #BE1212;
+		text-align: center;
+		font: 26px Arial, sans-serif;
+		font-weight: bold;
+	    }
+
+	    #map_canvas{
+		width:100%;
+		height: 100%; 	
+		position:absolute;
+		top:0px;
+	    }	   
+	    
+	    .word_wrap {
+		white-space : normal;
+	    }​	    
+	    
+	</style>
+        
+    </head>
+    <body>
+	<div data-role="page" id="main_page" data-add-back-btn="false" data-back-btn-text="Назад">
+	    <div data-role="popup" id="menu_App_Context" data-theme="d">
+		<ul data-role="listview" data-inset="true" data-divider-theme="d">
+		  <li><a onclick="checkMode(0);">Заявитель</a></li>
+		  <li><a onclick="checkMode(1);">Руководитель</a></li>
+		</ul>
+	    </div>
+	    
+	    <div data-role="popup" id="dialogSearchPack" data-add-back-btn="false" data-overlay-theme="a" data-theme="c" data-dismissible="false" style="max-width:400px;" class="ui-corner-all">
+		<div data-role="content" data-theme="d" class="ui-corner-bottom ui-content">
+		    <label for="packNumSearch">Номер дела:</label>
+		    <input type="text" name="packNumSearch" id="packNumSearch" value="" />
+		    <a onclick="director_search_pack($('#packNumSearch').val())" data-role="button" data-inline="true" data-rel="back" data-theme="c">Найти</a>
+		    <a href="#" data-role="button" data-inline="true" data-rel="back" data-theme="c">Закрыть</a>
+		</div>
+	    </div>
+	
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		<a href="#menu_App_Context" id="main_check_app" style="display:none" data-rel="popup" data-role="button" data-inline="true" data-transition="none" data-icon="info" class="ui-btn-right">Тип</a>
+		<h1 id="twi_acc">Заявитель</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+	      <div id="divUser">
+		<ul data-role="listview" data-inset="true" data-divider-theme="d">
+		    <li><a onclick="page_go('serviceListInfo')">Информация об услугах</a></li>
+		    <li><a onclick="page_go('contacts')">Контакты МФЦ</a></li>
+		    <li id="item_callBack"><a onclick="callBack_go()">Обратный звонок</a></li>
+		    <li id="item_records"><a onclick="records_go(0)">Запись на прием</a></li>
+		    <li id="item_home"><a onclick="serviceInfo_go();" data-transition="none">Личный кабинет</a></li>
+		    <li id="item_eq"><a onclick="page_go('eq')" data-transition="none">Состояние ЭО</a></li>
+		    <li><a href="#settings">Настройка</a></li>
+		</ul>
+		<div id="register_warn" class="ui-bar ui-bar-e" style="display:none">
+		  <h3 style="display:inline-block; width:92%; margin-top:5px;">Необходима регистрация.</h3>
+		  <div style="display:inline-block; width:8%; margin-top:0px; text-align:right;"></div>
+		  <p style="font-size:85%; margin:-.3em 0 1em;">Для доступа ко всем функциям.</p>
+		</div>		
+	      </div>
+	      <div id="divDirector" style="display:none">
+		<ul data-role="listview" data-inset="true" data-divider-theme="d">
+		    <li><a onclick="page_go('status')">Состояние МФЦ</a></li>
+		    <li><a onclick="page_go('analytic')">Аналитика</a></li>
+		    <li id="item_director_search"><a onclick="$('#dialogSearchPack').popup('open');">Информация по делу</a></li>
+		    <li><a href="#settings">Настройка</a></li>
+		</ul>
+	      </div>
+	    </div>
+	    <script>
+	      function checkMode(mode){
+		var save=false;
+		if (mode==0){
+		  $("#divUser").css("display","block");
+		  $("#divDirector").css("display","none");
+		  $("#twi_acc").html("Заявитель");
+		  if (propsApp["lastApp"]!='user')
+		    save=true;
+		  propsApp["lastApp"]='user';
+		}else{
+		  $("#divUser").css("display","none");
+		  $("#divDirector").css("display","block");
+		  $("#twi_acc").html("Руководитель");
+		  if (propsApp["lastApp"]!='director')
+		    save=true;
+		  propsApp["lastApp"]='director';
+		}
+		if (save)
+		  saveSattings();
+		$('#menu_App_Context').popup('close');
+	      }
+	    </script>
+	</div>
+	
+	<div data-role="page" id="dialogError">
+	    <div data-role="header" data-theme="a" class="ui-corner-top" data-add-back-btn="false">
+		<h3>Внимание</h3>
+	    </div>
+	    <div data-role="content" data-theme="d" class="ui-corner-bottom ui-content">
+		<h3 class="ui-title">При отправке данных произошла ошибка</h3>
+		<p id="dialogErrorMsg">Тест ошибки</p>
+		<!--
+		<a onclick="settings_dialog(true);" data-role="button" data-inline="true" data-rel="back" data-theme="c">Закрыть</a>
+		-->
+	    </div>
+	</div>	
+
+	<div data-role="page" id="status_eq_page" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Состояние ЭО</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+		<h3 id="status_eq_page_ownerName"></h3>
+		<div id="status_eq_detail"></div>
+	    </div>
+	</div>	
+
+	<div data-role="page" id="contacts_mfc_page" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Контакты МФЦ</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+		<h3 id="contacts_mfc_page_ownerName"></h3>
+		<div id="contacts_mfc_page_detail"></div>
+	    </div>
+	</div>	
+
+	<div data-role="page" id="contacts_mfc_map_page" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Контакты МФЦ</h1>
+	    </div>
+	    <div data-role="content" data-theme="b" id="map_canvas">
+	    </div>
+	</div>	
+	
+	<!-- Director begin-->
+	<div data-role="page" id="director_select_owner" data-add-back-btn="false" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1 id="director_select_owner_head">Состояние МФЦ</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+		<h3>Выберите филиал<h3>
+		<input type="search" id="director_select_owner_input" onkeyup="director_searchOwner($(this).val())" value="" placeholder="Поиск МФЦ...">
+		<ul id="director_owners" data-role="listview" data-inset="true" data-theme="c">
+		</ul>	    
+	    </div>
+	</div>	
+	<div data-role="page" id="director_page_status" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Состояние МФЦ</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+		<h3 id="director_page_status_ownerName"></h3>
+		<div id="director_status"></div>
+	    </div>
+	</div>	
+	<div data-role="page" id="director_page_analytic" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Аналитика</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+		<h3 id="director_page_analytic_ownerName"></h3>
+		<select onchange="director_analytic_mfc(recordsArr['recordsOwner'],this)" name="analytic-period" id="analytic-period" data-native-menu="false">
+		    <option value="day10">10 дней</option>
+		    <option value="day30">30 дней</option>
+		    <option value="day60">60 дней</option>
+		    <option value="day90">90 дней</option>
+		</select>
+<!--		
+		<a onclick="director_analytic_mfc()" data-role="button" data-inline="false">Обновить</a>
+		-->
+		<div id="director_analytic"></div>
+	    </div>
+	</div>
+	<div data-role="page" id="director_page_analytic_detail" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Аналитика</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+		<h3 id="director_page_analytic_detail_ownerName"></h3>
+		<h3 id="director_page_analytic_detail_head"></h3>
+		<div id="director_analytic_detail"></div>
+	    </div>
+	</div>
+	<div data-role="page" id="director_page_delo_list" data-add-back-btn="false" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Список дел</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+		<div id="director_delo_list"></div>
+	    </div>
+	</div>	
+	<div data-role="page" id="director_page_delo" data-add-back-btn="false" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Дело</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+		<h3 id="director_delo_head"></h3>
+		<div id="director_delo"></div>
+	    </div>
+	</div>	
+	<!-- Director end-->
+	
+	<div data-role="page" id="serviceListInfo" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Информация</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+		<h3>Выберите категорию услуги</h3>
+		<ul id="serviceListInfo_listCat" data-role="listview" data-inset="true" data-theme="c">
+		</ul>	    
+	    </div>
+	</div>	
+	<div data-role="page" id="serviceListInfo1" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Информация</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">	
+	      <h3 id="serviceListInfo1_cat">Категория</h3>
+	      <input type="search" onkeyup="serviceListInfo_searchService($(this).val())" name="password" id="search" value="" placeholder="Поиск услуги...">	    
+	      <ul id="selectService" data-role="listview" data-inset="true" data-theme="c">
+	      </ul>	    
+	    </div>
+	</div>	
+	<div data-role="page" id="serviceListInfo2" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <h1>Информация</h1>
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+	    </div>
+	    <div data-role="content" data-theme="b" id="serviceListInfo2_scroll">
+		<a id="serviceListInfo2_Service_b1" code="" onclick='serviceInfo_sendReglament(this)' data-role='button' data-mini='true' data-inline='true'>Отправить регламент на почту</a>
+		<div id="serviceListInfo2_Service"></div>
+	    </div>
+	</div>	
+	
+	<div data-role="page" id="callBack" data-add-back-btn="false" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <a href="#callBackSend" data-role="button" data-inline="true" data-icon="plus" data-theme="b" class="ui-btn-left">Заявка</a>
+		    <h1>Звонок</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">	
+		<ul data-role="listview" data-inset="true" id="listCallBack">
+		</ul>
+		<div data-role="popup" id="dialog_callBack_cancel" data-theme="d" data-overlay-theme="b" class="ui-content" style="max-width:340px; padding-bottom:2em;">
+		    <h3>Отменить заявку?</h3>
+		    <p>Заявка на обратный звонок будет отменена. Специалист МФЦ вам не перезвонит</p>
+		    <a onclick="callBack_cancel()" data-role="button" data-rel="back" data-theme="b" data-icon="check" data-inline="true">Да</a>
+		    <a href="#" data-role="button" data-rel="back" data-inline="true" data-mini="false">Нет</a>
+		</div>		
+	    </div>
+	</div>
+	<div data-role="page" id="callBackSend" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Звонок</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+		<p class="ui-body-d" style="padding:2em;display:none" id="callBackSendMessage">Запрос отправлен</p>
+		<div id="callBackOwnerDiv">
+		<ul id="callBackOwner" name="callBackOwner" data-inline="true" data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Выберите Филиал..." data-filter-theme="d"></ul>
+		</div>
+		<label for="textarea">Текст сообщения:</label>
+		<textarea cols="20" rows="8" name="textarea" id="msgCallBack"></textarea>
+		<a onclick="callBack_send()" data-role="button">Отправить заявку</a>
+	    </div>
+	</div>
+	
+	<div data-role="page" id="records_page_list" data-add-back-btn="false" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a onclick="records_go(1)" data-role="button" data-inline="true" data-icon="plus" data-theme="b" class="ui-btn-left">Записаться</a>
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Запись</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">	
+	      <h3>Текущие записи<h3>
+	      <p id="records_list"></p>
+	      
+	      <div data-role="popup" id="dialog_records_cancel" data-theme="d" data-overlay-theme="b" class="ui-content" style="max-width:340px; padding-bottom:2em;">
+		  <h3>Отмена записи</h3>
+		  <p>Вы действительно хотите отказаться от записи на прием?</p>
+		  <a onclick="records_cancel()" data-role="button" data-rel="back" data-theme="b" data-icon="check" data-inline="true">Да</a>
+		  <a href="#" data-role="button" data-rel="back" data-inline="true">Нет</a>
+	      </div>		
+	    </div>
+	</div>	
+	<div data-role="page" id="records_page_owner" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Запись</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+	      <h3>Выберите филиал<h3>
+<!--	      <input type="search" onkeyup="records_searchOwner($(this).val())" value="" placeholder="Поиск МФЦ..."> -->
+	      <ul id="records_owners" data-role="listview" data-inset="true" data-theme="c">
+	      </ul>	    
+	    </div>
+	</div>	
+	<div data-role="page" id="records_page_service" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Запись</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">	
+	      <h3>Выберите услугу<h3>
+<!--	      <input type="search" onkeyup="records_searchService($(this).val())" value="" placeholder="Поиск услуги..."> -->
+	      <ul id="records_services" data-role="listview" data-inset="true" data-theme="c">
+	      </ul>	    
+	    </div>
+	</div>	
+	<div data-role="page" id="records_page_day" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Запись</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">	
+	      <h3>Выберите день<h3>
+	      <div id="records_day"></div>
+	    </div>
+	</div>	
+	<div data-role="page" id="records_page_time" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Запись</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">	
+	      <h3>Выберите время<h3>
+	      <div id="records_time"></div>
+	    </div>
+	</div>	
+	<div data-role="page" id="records_page_total" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Запись</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+	      <h3>Итоговая информация</h3>
+	      <div id="records_total"></div>
+	      <label for="clientName">Имя:</label>
+	      <input type="text" name="clientName" id="clientName" value="" />
+	      <label for="clientSurname">Фамилия:</label>
+	      <input type="text" name="clientSurname" id="clientSurname" value="" />
+	      <a onclick="records_bookedTime()" data-role="button" data-icon="check" data-theme="b">Записаться</a>
+	    </div>
+	</div>
+	
+	<div data-role="page" id="serviceInfo" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="popup" id="dialogAddPackToList" data-add-back-btn="false" data-overlay-theme="a" data-theme="c" data-dismissible="false" style="max-width:400px;" class="ui-corner-all">
+		<div data-role="content" data-theme="d" class="ui-corner-bottom ui-content">
+		    <h3>Добавить услугу</h3>
+		    <label for="packNum">Номер дела:</label>
+		    <input type="text" name="packNum" id="packNum" value="" />
+		    <label for="authCode">Код авторизации:</label>
+		    <input type="text" name="authCode" id="authCode" value="" />
+		    <a onclick="serviceInfo_add();" data-role="button" data-inline="true" data-rel="back" data-theme="c">Добавить</a>
+		    <a onclick="serviceInfo_close();" data-role="button" data-inline="true" data-rel="back" data-theme="c">Закрыть</a>
+		</div>
+	    </div>
+	    
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <a onclick="$('#dialogAddPackToList').popup('open');" data-role="button" data-inline="true" data-icon="plus" data-theme="b" class="ui-btn-left">Добавить</a>
+		    <h1>Мои услуги</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">	
+		    <div data-role="navbar">
+			<ul>
+			    <li><a id="serviceInfo_check1" onclick="serviceInfo_changeList(true,'status1');" class="ui-btn-active">Оказанные услуги</a></li>
+			    <li><a id="serviceInfo_check2" onclick="serviceInfo_changeList(false,'status1');">Текущие услуги</a></li>
+			</ul>
+		    </div>			
+		    <p id="status1"></p>
+	    </div>
+	    
+            <script type="text/javascript">
+		function serviceInfo_add(){
+		  var packNum=$('#packNum').val();
+		  var authCode=$('#authCode').val();
+		  if (emptyValue(packNum)||emptyValue(authCode)){
+		    showMessage("Все поля должны быть заполнены");
+		    return;
+		  }
+		  $('#dialogAddPackToList').popup('close');
+		  serviceInfo_addPackList(packNum,authCode);
+		}
+		
+		function serviceInfo_close(){
+		  $('#dialogAddPackToList').popup('close');
+		}
+		
+	    </script>
+	    
+	</div>	
+	
+	<div data-role="page" id="menu1_serviceInfo" data-add-back-btn="true" data-back-btn-text="Назад">
+		<div data-role="popup" id="menu_Panel_Context" data-theme="d">
+		    <ul data-role="listview" data-inset="true" data-divider-theme="d">
+		      <li><a onclick="serviceInfo_back()">Назад</a></li>
+		      <li data-role="list-divider"></li>
+		      <li><a onclick="serviceInfo_showInfo('first',false)">Общая информация</a></li>
+		      <li><a onclick="serviceInfo_showInfo('status',false)">Ход исполнения услуги</a></li>
+		      <li><a onclick="serviceInfo_showInfo('docs',false)">Документы</a></li>
+		      <li><a onclick="serviceInfo_showInfo('reg',false)">Основания предоставления услуги</a></li>
+		      <li><a onclick="serviceInfo_showInfo('msg',false)" data-transition="none">Оставить сообщение</a></li>
+		      <li><a onclick="serviceInfo_showInfo('rating',false)">Оценка услуги</a></li>
+		    </ul>
+		</div>
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#menu_Panel_Context" data-rel="popup" data-role="button" data-inline="true" data-transition="none" data-icon="info" class="ui-btn-left">Действия</a>
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1 id="serviceInfo_head">Ваши услуги</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">	
+		    <h3 id="serviceInfo_content"></h3>
+		    <div id="serviceInfo_allPage">
+		      <div id="serviceInfo_first" style="display:none">
+			1
+		      </div>
+		      <div id="serviceInfo_status" style="display:none">
+			<ul data-role="listview" data-inset="true" id="table-pack-info-data">
+			</ul>
+<!--
+		      <table data-role="table" data-mode="reflow" class="ui-responsive table-stroke" data-column-btn-text="Столбцы">
+			    <thead>
+			      <tr>
+				<th data-priority="1">Действие</th>
+				<th data-priority="2">Создано</th>
+				<th>Начато</th>
+				<th data-priority="3">Завершено</th>
+				<th data-priority="4"><abbr title="Исполнитель">Исполнитель</abbr></th>
+				<th data-priority="5">ОГВ</th>
+				<th data-priority="6">Комментарий</th>
+			      </tr>
+			    </thead>
+			    <tbody id="table-pack-info-data">
+			    </tbody>
+			</table>   -->
+		      </div>
+		      <div id="serviceInfo_docs" style="display:none">
+			<ul data-role="listview" data-inset="true" id="table-pack-info-docs">
+			</ul>
+<!--			<table data-role="table" data-mode="reflow" class="ui-responsive table-stroke" data-column-btn-text="Столбцы">
+			    <thead>
+			      <tr>
+				<th data-priority="1">Документ</th>
+				<th data-priority="3">Файл</th>
+				<th data-priority="2">Операция</th>
+			      </tr>
+			    </thead>
+			    <tbody id="table-pack-info-docs">
+			    </tbody>
+			</table>   -->
+		      </div>
+		      <div id="serviceInfo_reg" style="display:none">
+			Регламент
+		      </div>
+		      <div id="serviceInfo_msg" style="display:none">
+			<label for="textarea">Сообщение:</label>
+			<textarea cols="20" rows="16" name="textarea" id="saveMsgPackTxt"></textarea>
+			<a onclick="serviceInfo_saveMsgPack($('#saveMsgPackTxt').val())" data-role="button">Отправить</a>
+		      </div>
+		      <div id="serviceInfo_rating" style="display:none">
+			<div id="okgu_result"></div>
+			<div id="okgu_all" style="display:none">
+			  <div id="okgu_current"></div>
+			  <div id="okgu_question"></div>
+			  <div id="okgu_answer"></div>
+			  <div data-role="controlgroup" data-type="horizontal" data-mini="true">
+			      <input type="button" id="prevButton" onclick="serviceInfo_okgu_prev()" value="Назад">
+			      <input type="button" id="skipButton" onclick="serviceInfo_okgu_skip()" value="Пропустить">
+			      <input type="button" id="nextButton" onclick="serviceInfo_okgu_next()" value="Далее">
+			  </div>
+			  <div id="divCommentOKGU" style="display:none">
+			    <label for="commentOKGU">Комментарий к анкете:</label>
+			    <textarea cols="20" rows="16" name="textarea" id="commentOKGU"></textarea>
+			    <input type="button" id="sendButton" onclick="serviceInfo_sendResultOKGU()" value="Отправить">
+			  </div>  
+			</div>  
+		      </div>
+		    </div>
+	    </div>
+	    
+	    <script type="text/javascript">
+		function serviceInfo_showInfo(page,init){
+		  var res="serviceInfo_"+page;
+		  if (page=='first'){
+		    $('#serviceInfo_head').html('Свод');
+		  }else if (page=='status'){
+		    $('#serviceInfo_head').html('Исполнение');
+		  }else if (page=='docs'){
+		    $('#serviceInfo_head').html('Документы');
+		  }else if (page=='reg'){
+		    $('#serviceInfo_head').html('Регламент');
+		  }else if (page=='msg'){
+		    $('#serviceInfo_head').html('Сообщение');
+		  }else if (page=='rating'){
+		    $('#serviceInfo_head').html('Оценка');
+		    serviceInfo_getOkgu();
+		  };
+		  $.each( $('#serviceInfo_allPage').children(), function ( i, val ) {	
+		    var el=$(val);
+		    if (el.attr('id')==res)
+		      el.css('display','block');
+		    else  
+		      el.css('display','none');
+		  })
+		  if (!init)
+		    $('#menu_Panel_Context').popup('close');
+		}
+
+		function serviceInfo_okgu_next(){
+		  var q=okgu.result.questions[okgu_current];
+		  if (okgu_answer[q.id]==null){
+		    alert("Необходимо выбрать ответ!");
+		    return;
+		  }
+		  okgu_current++;
+		  serviceInfo_okgu(okgu_current);
+		}
+		
+		function serviceInfo_okgu_prev(){
+		  if (okgu_current>=okgu.result.questions.length)
+		    okgu_current=okgu_current-2;
+		  else  
+		    okgu_current--;
+		  serviceInfo_okgu(okgu_current);
+		}
+		
+		function serviceInfo_okgu_skip(){
+		  okgu_current++;
+		  serviceInfo_okgu(okgu_current);
+		}
+
+		function serviceInfo_okgu_val(val,answer){
+		  var q=okgu.result.questions[okgu_current];		
+		  if (q.typeQuestion=='radio'){
+		     var ans={};
+		     ans[q.listAnswer[answer].id]=true;
+		     okgu_answer[q.id]=ans;
+		  }
+		}
+		
+		function serviceInfo_okgu(current){
+		  if (current==0)
+		    $('#prevButton').button("disable");
+		  else  
+		    $('#prevButton').button("enable");
+		  if (current>=okgu.result.questions.length){
+		    $('#nextButton').button("disable");
+		    $('#skipButton').button("disable");
+		    $('#divCommentOKGU').css("display","block");
+		    //$('#sendButton').button("enable");
+		    return;
+		  }else{
+		    $('#nextButton').button("enable");
+		    $('#skipButton').button("enable");
+		    $('#divCommentOKGU').css("display","none");
+		    //$('#sendButton').button("disable");
+		  }
+		  //
+		  okgu_current=current;
+		  var q=okgu.result.questions[okgu_current];
+		  $("#okgu_current").html("<b>Вопрос "+(okgu_current+1)+" (из "+okgu.result.questions.length+")</b>");
+		  $("#okgu_question").html("<b>"+q.questionName+":</b>");
+		  var st="<fieldset data-role='controlgroup'>";
+		  if (q.typeQuestion=='radio'){
+		    for(var i=0;i<q.listAnswer.length;i++){
+		      var a=q.listAnswer[i];
+		      var id="radio-choice-"+i;
+		      var ext="";
+		      if (okgu_answer[q.id]!=null&&okgu_answer[q.id][a.id]==true)
+			ext=" checked='checked' ";
+		      st+="<input onclick='serviceInfo_okgu_val(this,"+i+")' type='radio' name='radio-choice-1' id='"+id+"' value='"+a.codeMKGU+"'"+ext+">"+
+		      "<label for='"+id+"'>"+a.answerName+"</label>";
+		    }
+		  }
+		  st+="</fieldset>";
+		  $('#okgu_answer').html(st);
+		  $('#okgu_answer').trigger("create");
+		}
+	    </script>	    
+	    
+	</div>	
+	
+	<div data-role="page" id="settings" data-theme="b" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="popup" id="confirmDialogSettings" data-add-back-btn="false" data-overlay-theme="a" data-theme="c" data-dismissible="false" style="max-width:400px;" class="ui-corner-all">
+		<div data-role="header" data-theme="a" class="ui-corner-top" data-add-back-btn="false" data-position="fixed">
+		    <h3>Внимание</h3>
+		</div>
+		<div data-role="content" data-theme="d" class="ui-corner-bottom ui-content">
+		    <h3 class="ui-title">В настройках есть несохранення изменения. Сохранить?</h3>
+		    <a onclick="settings_dialog(true);" data-role="button" data-inline="true" data-rel="back" data-theme="c">Да</a>
+		    <a onclick="settings_dialog(false);" data-role="button" data-inline="true" data-rel="back" data-transition="flow" data-theme="b">Нет</a>
+		</div>
+	    </div>
+	    
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		<a onclick="settings_back();" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		<h1>Настройки</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+		<div id="urlrepo_div">
+		<label for="urlrepo">Адрес репозитария:</label>
+		<input type="url" name="urlrepo" id="urlrepo" value="" />
+		</div>
+		<label for="selectMFC">МФЦ:</label>
+		<div>&nbsp</div>
+	        <div id="selectMFCdiv">
+	          <ul id="selectMFC" name="selectMFC" data-inline="true" data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Выберите МФЦ..." data-filter-theme="d"></ul>
+	        </div>
+		<label for="phone">Номер телефона (8XXXXXXXXXX):</label>
+		<input type="tel" name="phone" id="phone" value="" />
+		<label for="email">Почта:</label>
+		<input type="email" name="email" id="email" value="" data-clear-btn="true" />
+		<label for="password">Код авторизации:</label>
+		<input type="password" name="password" id="password" value="" autocomplete="off">
+	      <p> 
+		<a onclick="saveSattings()" data-role="button" data-inline="true">Сохранить</a>
+		<a onclick="register()" data-role="button" data-inline="true">Зарегистрироваться</a>
+		<a onclick="checkRegister()" data-role="button" data-inline="true">Проверить реквизиты доступа</a>
+	      </p>
+	    </div> 
+	    
+            <script type="text/javascript">
+		function settings_back(){
+		  if (changeSettings())
+		    $('#confirmDialogSettings' ).popup('open');
+		  else{
+		   $.mobile.changePage('#main_page');
+/*		    $('#menu_Panel_Settings').panel(
+			"open",
+			{
+			  options: {
+			    position: "left",
+			    animate: false,
+			    dismissable: false
+			  }
+			}
+		    );*/		  
+		  }
+		}
+		
+		function settings_dialog(save){
+		  if (save)
+		    saveSattings();
+		  else
+		    loadSettings();
+		  $('#confirmDialogSettings' ).popup('close');
+			$.mobile.changePage('#main_page');		  
+/*		  $('#menu_Panel_Settings').panel(
+		      "open",
+		      {
+			options: {
+			  position: "left",
+			  animate: false,
+			  dismissable: false
+			}
+		      }
+		  );	*/	  
+		}	
+	    </script>
+
+	</div>
+    
+</div>	
+<!--	<script type="text/javascript" src="phonegap.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+            app.initialize();
+        </script> -->
+    </body>
+</html>
