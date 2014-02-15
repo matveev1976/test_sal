@@ -22,7 +22,12 @@
 	<script type="text/javascript" src="js/jqplot/jquery.jqplot.min.js"></script>
 	<script type="text/javascript" src="js/jqplot/plugins/jqplot.pieRenderer.min.js"></script>
 	<script type="text/javascript" src="js/jqplot/plugins/jqplot.barRenderer.min.js"></script>
-	<script type="text/javascript" src="js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>	
+	<script type="text/javascript" src="js/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+	<script type="text/javascript" src="js/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
+	<script type="text/javascript" src="js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+	<script type="text/javascript" src="js/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
+	<script type="text/javascript" src="js/jqplot/plugins/jqplot.pointLabels.min.js"></script>
+	
 	<link rel="stylesheet" href="css/jqplot/jquery.jqplot.css" />
 
 	<style type="text/css">
@@ -108,7 +113,7 @@
         <script type="text/javascript">
 
 	    var ddd;
-	    var storeName='propsAppMFC_New2';
+	    var storeName='propsAppMFC_New211';
 	    var propsAppEt = {'phone':'','email':'','password':'','urlrepo':'http://192.168.58.135','auto_selectMFC':'','director':false,'lastApp':'user','register':false};
 	    var propsApp;
 	    var userError;
@@ -641,7 +646,7 @@
 	    }	    
 	    
 	    $.ajaxSetup( {
-	      timeout : 30000,
+	      timeout : 45000,
 	      beforeSend : 
 		function(jqXHR, settings){
 		  if (isRequestRepo&&emptyValue(propsApp['urlrepo'])){
@@ -715,10 +720,35 @@
 		el.attr("key","");
 		el.trigger('keyup');
 	      });
+	      $('#selectMFCdiv input').focus(function () {
+		var el=$(this);
+		var regex1 = new RegExp("^\\s*$");
+		if (regex1.test(el.val())){
+		  el.val(" ");
+		  el.trigger('keyup');
+		}
+	      });
 	      //
 	      loadSettings();
 	      //$("#phone").inputmask("mask", {"mask": "89999999999","placeholder": "8__________" });
 	      //$("#phone").mask("89999999999");
+	    });
+	    
+	    $( document ).on( "pageinit", "#callBackSend", function() {
+	      $('#callBackOwnerDiv a.ui-input-clear').click(function () {
+		var el=$(this).closest('form').find('input');
+		el.val("");
+		el.attr("key","");
+		el.trigger('keyup');
+	      });
+	      $('#callBackOwnerDiv input').focus(function () {
+		var el=$(this);
+		var regex1 = new RegExp("^\\s*$");
+		if (regex1.test(el.val())){
+		  el.val(" ");
+		  el.trigger('keyup');
+		}
+	      });
 	    });
 
 	    function disableMenuItem(){
@@ -752,7 +782,7 @@
 		$("#urlrepo_div").css("display","none");
 		$("#selectMFC_div").css("display","none");
 	      }else if (typeApp=='salehard'){
-		$("#urlrepo_div").css("display","none");
+		//$("#urlrepo_div").css("display","none");
 		$('#main_check_app').css('display','none');
 	      }
 	    });
@@ -763,7 +793,7 @@
 				$input = $( data.input ),
 				value = $input.val(),
 				html = "";
-			$ul.html( "" );			
+			$ul.html( "" );
 			if (value){
 			  //if (propsApp["auto_selectMFC_key"]=='')
 			  $ul.html( "" );
@@ -824,12 +854,6 @@
 				$ul.listview( "refresh" );
 				$ul.trigger( "updatelayout");
 				//
-				$('#callBackOwnerDiv a.ui-input-clear').click(function () {
-				  var el=$(this).closest('form').find('input');
-				  el.val("");
-				  el.attr("key","");
-				  el.trigger('keyup');
-				});
 				$("#callBackOwnerDiv li").click(function () {
 				  var el=$(this).closest('[data-role=listview]').prev('form').find('input');
 				  el.val($(this).text());
@@ -911,13 +935,14 @@
 	    }
 	    
 	    function serviceListInfo_selectCat(el){
+	      pageModeService="serviceListInfo";
 	      var el = $(el);
 	      categoryService=el.attr('code');
-	      $('#serviceListInfo1_cat').html(el.text());
-	      serviceListInfo_searchService('');
+	      $('#selectServicePage_cat').html(el.text());
+	      searchService('');
 	    }
 
-	    function serviceListInfo_searchService(val){
+	    function searchService(val){
 	      $.ajax({
 	      url : getUrlMfc()+"/rest/mobileServices/listServices",
 	      type : "GET",
@@ -931,9 +956,9 @@
 		    $ul=$('#selectService');
 		    //
 		    $.each( response.result, function ( i, val ) {
-			    html += "<li><a code='"+val.code+"' onclick='serviceListInfo_selectService(this)'><span class='word_wrap'>" + val.name + "</span></a></li>";
+			    html += "<li><a code='"+val.code+"' onclick='selectService(this)'><span class='word_wrap'>" + val.name + "</span></a></li>";
 		    });
-		    $.mobile.changePage('#serviceListInfo1');
+		    $.mobile.changePage('#selectServicePage');
 		    //
 		    $ul.html( html );
 		    $ul.listview( "refresh" );
@@ -943,9 +968,14 @@
 	      });
 	    }
 
-	    function serviceListInfo_selectService(el){
+	    function selectService(el){
 	      var el = $(el);
-	      serviceListInfo_getService(el.attr('code'));
+	      if (pageModeService=='serviceListInfo')
+		serviceListInfo_getService(el.attr('code'));
+	      else if (pageModeService=='peakLoad'){
+		recordsArr['selectServiceCode']=el.attr('code');
+		director_load_rating();
+	      }
 	    }
 	    
 	    var myScroll=null;
@@ -1045,7 +1075,7 @@
 			      "<div class=ui-block-a>Дата/время заявки</div>"+
 			      "<div class=ui-block-a><span class='m-value2'>"+formatDateTime(val.createDate)+"</span></div>"+
 			      "<div class=ui-block-a>С вами свяжуться в</div>"+
-			      "<div class=ui-block-a><span class='m-value2'>"+(val.callDate!=null?formatDateTime(val.callDate):"[не задано]")+"</span></div>"+
+			      "<div class=ui-block-a><span class='m-value2'>"+(val.callDate!=null?formatDateTime(val.callDate):"[ближайшее время]")+"</span></div>"+
 			      "<div class=ui-block-a>Ваш комментарий</div>"+
 			      "<div class=ui-block-a><span class='m-value2'>"+(val.msg!=null?val.msg:"")+"</span></div>"+
 			      "<div class=ui-block-a>Комментарий сотрудника</div>"+
@@ -1203,7 +1233,6 @@
 	      var el = $(el);
 	      recordsArr["recordsOwner"]=el.attr('code');
 	      recordsArr["recordsOwnerName"]=el.text();
-	      //$('#serviceListInfo1_cat').html(el.text());
 	      records_searchService();
 	    }
 
@@ -1237,7 +1266,6 @@
 	      var el = $(el);
 	      recordsArr["recordsServiceId"]=el.attr('code');
 	      recordsArr["recordsServiceIdName"]=el.text();
-	      //$('#serviceListInfo1_cat').html(el.text());
 	      records_Shedule();
 	    }
 
@@ -1471,17 +1499,24 @@
 	      page_go("rating",recordsArr["ratingCodeName"]);
 	    }
 
+	    function director_load_rating_service(){
+	      recordsArr['selectServiceCode']=null;
+	      director_load_rating();
+	    } 
+	    
+	    var plot1;
+	    
 	    //Загрузка выбранного рейтинга
-	    function director_load_rating(owner,val){
-	      var period;
-	      if (val==null)
-		period=$('#rating-period').val();
-	      else
-		period=$(val).val();
+	    function director_load_rating(){
+	      var period=$('#rating-period').val();
+	      var typeGroup=$('#rating-type-group').val();
+	      //
+	      //alert(recordsArr['recordsOwner']+"-"+period+"-"+typeGroup+"-"+recordsArr['selectServiceCode']);
 	      $.ajax({
 	      url : getUrlMfc()+"/rest/mobileServices/analyticExt",
 	      type : "GET",
-	      data : {phone:propsApp['phone'], pwd:propsApp['password'],period:period, owner:owner, mode:recordsArr["ratingCode"]},
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'],period:period, owner:recordsArr['recordsOwner'], 
+		mode:recordsArr["ratingCode"], typegroup:typeGroup, service:recordsArr['selectServiceCode']},
 	      contentType : "application/json",
 	      dataType: "jsonp",
 	      success :
@@ -1493,11 +1528,17 @@
 		    var chart="";
 		    if (response.result.length>0)
 		      chart=response.result[0].chart;
-		    //  
+		    //
+		    $.mobile.changePage('#director_page_rating');
+		    if (recordsArr["ratingCode"]=='peakLoad')
+		      $('#rating-type-group-div').css('display','block');
+		    else  
+		      $('#rating-type-group-div').css('display','none');
+		    $('#director_page_rating_mode').html(recordsArr["ratingCodeName"]);
+		    //
 		    if (chart=='pie'){
-		      $.mobile.changePage('#director_page_rating');
 		      var data = response.result[0].detail;
-		      var plot1 = jQuery.jqplot ('director_rating_info', [data], 
+		      plot1 = jQuery.jqplot ('director_rating_info', [data], 
 			{ 
 			  seriesDefaults: {
 			    // Make this a pie chart.
@@ -1510,9 +1551,9 @@
 			  }, 
 			  legend: { show:true, location: 'e' }
 			}
-		      );		  
+		      );
+		      plot1.replot( {resetAxes: true } );
 		    }else if (chart=='bar'){
-		      $.mobile.changePage('#director_page_rating');
 		      //var data = response.result[0].detail;
 		      var data = {};
 		      var ticks = {};
@@ -1521,28 +1562,35 @@
 			ticks = response.result[0].detail[1];
 		      }else
 			alert("Для графика нет данных");
-		      var plot1 = jQuery.jqplot ('director_rating_info', [data], 
+		      plot1 = jQuery.jqplot ('director_rating_info', [data], 
 			{
 			  seriesDefaults: {
 			    // Make this a pie chart.
 			    renderer: jQuery.jqplot.BarRenderer, 
-			    rendererOptions: {fillToZero: true}
+			    rendererOptions: {fillToZero: true},
+			    pointLabels: {show: true}
+			    //pointLabels: { show: true, location: 'e', edgeTolerance: -15 }
 			  },
 			  axes: {
 			    // Use a category axis on the x axis and use our custom ticks.
 			    xaxis: {
 				renderer: $.jqplot.CategoryAxisRenderer,
-				ticks: ticks
+				ticks: ticks,
+				tickOptions: {
+				  angle: -30
+				},
+				tickRenderer:$.jqplot.CanvasAxisTickRenderer
 			    },
 			    // Pad the y axis just a little so bars can get close to, but
 			    // not touch, the grid boundaries.  1.2 is the default padding.
 			    yaxis: {
-				pad: 1.05,
-				tickOptions: {formatString: '%d'}
+				pad: 1.05//,
+				//tickOptions: {formatString: '%d'}
 			    }
 			  }
 			}
-		      );		  
+		      );
+		      plot1.replot( {resetAxes: true } );
 		    }else{
 		      $.each( response.result, function ( i, val ) {
 			var st1="";
@@ -1562,13 +1610,19 @@
 		      html="<table>"+html+"</table>";
 		      $ul.html( html );
 		    }
-		    $.mobile.changePage('#director_page_rating');		    
 		    //
 		    $('#director_page_analytic_ownerName').html(recordsArr["recordsOwnerName"]);
 		    //$ul.trigger("create");
 		  }		
 		}
 	      });
+	    }
+	    
+	    function director_select_service(){
+	      pageModeService="peakLoad";
+	      categoryService=null;
+	      $('#selectServicePage_cat').html("");
+	      searchService('');
 	    }
 	    
 	    function show_detail(obj){
@@ -1630,6 +1684,7 @@
 	    };
 	    
 	    var pageMode;
+	    var pageModeService;
 	    
 	    function page_go(page, head1){
 	      pageMode=page;
@@ -1640,15 +1695,15 @@
 		$('#director_select_owner_head').html("Состояние");
 	      else if (pageMode=='analytic')
 		$('#director_select_owner_head').html("Аналитика");
-	      else if (pageMode=='rating'){
-		$('#director_select_owner_head').html("Рейтинги");
-	      }else if (pageMode=='eq')
+	      else if (pageMode=='rating')
+		  $('#director_select_owner_head').html("Рейтинги");
+	      else if (pageMode=='eq')
 		$('#director_select_owner_head').html("Состояние ЭО");
 	      else if (pageMode=='contacts')
 		$('#director_select_owner_head').html("Контакты МФЦ");
 	      else if (pageMode=='serviceListInfo')
 		$('#director_select_owner_head').html("Информация");
-	      else if (pageMode=='pik')
+	      else if (pageMode=='peakLoad')
 		$('#director_select_owner_head').html("Нагрузка");
 	      $('#director_select_owner_input').val("");
 	      director_searchOwner(null);
@@ -1689,17 +1744,17 @@
 	      else if (pageMode=='analytic')
 		director_analytic_mfc(el.attr('code'),null);
 	      else if (pageMode=='rating')
-		director_load_rating(el.attr('code'),null);
+		director_load_rating();
 	      else if (pageMode=='eq')
 		status_eq(el.attr('code'));
 	      else if (pageMode=='contacts')
 		contacts_mfc(el.attr('code'));
 	      else if (pageMode=='serviceListInfo')
 		serviceListInfo_go(el.attr('code'));
-	      else if (pageMode=='pik'){
+	      else if (pageMode=='peakLoad'){
 		recordsArr["ratingCode"]="peakLoad";
 		recordsArr["ratingCodeName"]="Пиковая нагрузка";
-		director_load_rating(el.attr('code'),null);
+		$.mobile.changePage('#director_page_peak');
 	      }
 	    }
 	    
@@ -1936,7 +1991,7 @@
 		    <li id="item_callBack"><a onclick="callBack_go()">Обратный звонок</a></li>
 		    <li id="item_records"><a onclick="records_go(0)">Запись на прием</a></li>
 		    <li id="item_home"><a onclick="serviceInfo_go();" data-transition="none">Личный кабинет</a></li>
-		    <li id="item_eq"><a onclick="page_go('eq')" data-transition="none">Состояние ЭО</a></li>
+		    <li id="item_eq"><a onclick="page_go('eq')" data-transition="none">Состояние очереди</a></li>
 		    <li><a href="#settings">Настройки</a></li>
 		</ul>
 		<div id="register_warn" class="ui-bar ui-bar-e" style="display:none">
@@ -2056,7 +2111,7 @@
 		<ul data-role="listview" data-inset="true" data-divider-theme="d">
 		    <li><a onclick="page_go('analytic')">Общая информация об МФЦ</a></li>
 		    <li><a onclick="director_analytic_list_rating()">Рейтинги</a></li>
-		    <li><a onclick="page_go('pik')">Информация по пиковой нагрузке</a></li>
+		    <li><a onclick="page_go('peakLoad')">Информация по пиковой нагрузке</a></li>
 		</ul>
 	    </div>
 	</div>
@@ -2068,10 +2123,14 @@
 	    <div data-role="content" data-theme="b">
 		<h3 id="director_page_analytic_ownerName"></h3>
 		<select onchange="director_analytic_mfc(recordsArr['recordsOwner'],this)" name="analytic-period" id="analytic-period" data-native-menu="false">
+		    <option value="day1">1 день</option>
+		    <option value="day7">7 дней</option>
 		    <option value="day10">10 дней</option>
 		    <option value="day30">30 дней</option>
 		    <option value="day60">60 дней</option>
 		    <option value="day90">90 дней</option>
+		    <option value="day180">180 дней</option>
+		    <option value="day365">365 дней</option>
 		</select>
 <!--		
 		<a onclick="director_analytic_mfc()" data-role="button" data-inline="false">Обновить</a>
@@ -2096,15 +2155,40 @@
 	    </div>
 	    <div data-role="content" data-theme="b">
 		<h3 id="director_page_analytic_ownerName"></h3>
-		  <select onchange="director_load_rating(recordsArr['recordsOwner'],this)" name="rating-period" id="rating-period" data-native-menu="false">
-		      <option value="day">День</option>
-		      <option value="week">Неделя</option>
-		      <option value="month">Месяц</option>
-		      <option value="quarter">Квартал</option>
-		      <option value="year">Год</option>
-		  </select>
-		  <div id="director_rating_info" style="height:300px">
-		  </div>
+		<h3 id="director_page_rating_mode" style="color:red">!!!!<h3>
+		<select onchange="director_load_rating()" name="rating-period" id="rating-period" data-native-menu="false">
+		  <option value="day1">1 день</option>
+		  <option value="day7">7 дней</option>
+		  <option value="day10">10 дней</option>
+		  <option value="day30">30 дней</option>
+		  <option value="day60">60 дней</option>
+		  <option value="day90">90 дней</option>
+		  <option value="day180">180 дней</option>
+		  <option value="day365">365 дней</option>
+		</select>
+		<div id="rating-type-group-div" style="display:none">
+		<select onchange="director_load_rating()" name="rating-type-group" id="rating-type-group" data-native-menu="false">
+		  <option value="hour">По часам</option>
+		  <option value="week">По дням недели</option>
+		  <option value="month">По месяцам</option>
+		  <option value="quarter">По кварталам</option>
+		</select>
+		</div>
+		<div id="director_rating_info" style="height:300px">
+		</div>
+	    </div>
+	</div>
+	<div data-role="page" id="director_page_peak" data-add-back-btn="true" data-back-btn-text="Назад">
+	    <div data-role="header" data-theme="b" data-position="fixed">
+		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
+		    <h1>Нагрузка</h1>
+	    </div>
+	    <div data-role="content" data-theme="b">
+		<label for="peak_service_select">Выберите критерий:</label>
+		<ul id="peak_service_select" data-role="listview" data-inset="true" data-divider-theme="d">
+		  <li><a onclick="director_load_rating_service()">По всем услугам</a></li>
+		  <li><a onclick="director_select_service();">По конкретной услуге</a></li>
+		</ul>
 	    </div>
 	</div>
 	<div data-role="page" id="director_page_analytic_detail" data-add-back-btn="true" data-back-btn-text="Назад">
@@ -2150,14 +2234,14 @@
 		</ul>	    
 	    </div>
 	</div>	
-	<div data-role="page" id="serviceListInfo1" data-add-back-btn="true" data-back-btn-text="Назад">
+	<div data-role="page" id="selectServicePage" data-add-back-btn="true" data-back-btn-text="Назад">
 	    <div data-role="header" data-theme="b" data-position="fixed">
 		    <a href="#main_page" data-role="button" data-icon="bars" data-inline="true" class="ui-btn-right">Меню</a>
 		    <h1>Информация</h1>
 	    </div>
 	    <div data-role="content" data-theme="b">	
-	      <h3 id="serviceListInfo1_cat">Категория</h3>
-	      <input type="search" onkeyup="serviceListInfo_searchService($(this).val())" name="password" id="search" value="" placeholder="Поиск услуги...">	    
+	      <h3 id="selectServicePage_cat"></h3>
+	      <input type="search" onkeyup="searchService($(this).val())" name="password" id="search" value="" placeholder="Поиск услуги...">	    
 	      <ul id="selectService" data-role="listview" data-inset="true" data-theme="c">
 	      </ul>	    
 	    </div>
@@ -2546,10 +2630,10 @@
 	    <div data-role="content" data-theme="b">
 		<div id="urlrepo_div">
 		<label for="urlrepo">Адрес репозитария:</label>
-		<input type="url" name="urlrepo" id="urlrepo" value="" />
+		<input onchange="clearMFC()" type="url" name="urlrepo" id="urlrepo" value="" />
 		</div>
 		<div id="selectMFC_div">
-		  <label for="selectMFC">МФЦ (нажмите пробел для открытия списка):</label>
+		  <label for="selectMFC">МФЦ:</label>
 		  <div>&nbsp</div>
 		  <div id="selectMFCdiv">
 		    <ul id="selectMFC" name="selectMFC" data-inline="true" data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Выберите МФЦ..." data-filter-theme="d"></ul>
@@ -2569,6 +2653,10 @@
 	    </div> 
 	    
             <script type="text/javascript">
+		function clearMFC(){
+		  setValueAutocomplete("selectMFC","","");
+		  saveSattings();
+		}
 		function settings_back(){
 		  if (changeSettings())
 		    $('#confirmDialogSettings' ).popup('open');
