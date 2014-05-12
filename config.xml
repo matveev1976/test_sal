@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.lanit.cp.mobile" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>Мобильный МФЦ</name>
+<widget id="org.lanit.cp.mobile.sal" version="1.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>Мобильный МФЦ. Салехард.</name>
     <description>
-        Мобильный клиент МФЦ.
+        Мобильный клиент МФЦ. Салехард.
     </description>
     <author email="smatveev@lanit.ru" href="http://www.lanit.ru">
         Ланит-Самара
@@ -48,7 +48,12 @@
     <gap:splash gap:platform="ios" height="960" src="res/screen/ios/screen-iphone-portrait-2x.png" width="640" />
     <gap:splash gap:platform="ios" height="1024" src="res/screen/ios/screen-ipad-portrait.png" width="768" />
     <gap:splash gap:platform="ios" height="768" src="res/screen/ios/screen-ipad-landscape.png" width="1024" />
+    <gap:splash gap:platform="ios" height="1136" src="res/screen/ios/screen-iphone-portrait-568h-2x.png" width="640" />    
     <gap:splash gap:platform="winphone" src="res/screen/windows-phone/screen-portrait.jpg" />
+    
+	<gap:config-file platform="ios" parent="UIViewControllerBasedStatusBarAppearance" overwrite="true">
+    	<false/>
+	</gap:config-file>
     
     <access origin="*" />
     <gap:platform name="ios" />
