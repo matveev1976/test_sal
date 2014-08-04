@@ -1422,14 +1422,19 @@
 
 	    function director_analytic_mfc(owner,val){
 	      var period;
-	      if (val==null)
-		period=$('#analytic-period').val();
+	      var begDate;
+	      var endDate;
+	      if (val==null){
+			period=null;//$('#analytic-period').val();
+			begDate = $('#analytic-begDate').val()=="" ? null : new Date($('#analytic-begDate').val());
+			endDate = $('#analytic-endDate').val()=="" ? null : new Date($('#analytic-endDate').val());
+	      }
 	      else
 		period=$(val).val();
 	      $.ajax({
 	      url : getUrlMfc()+"/rest/mobileServices/analyticMFC",
 	      type : "GET",
-	      data : {phone:propsApp['phone'], pwd:propsApp['password'],period:period, typeApp:typeApp, owner:owner},
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'],period:period, begDate: begDate, endDate: endDate, typeApp:typeApp, owner:owner},
 	      contentType : "application/json",
 	      dataType: "jsonp",
 	      success :
@@ -1509,13 +1514,15 @@
 	    //Загрузка выбранного рейтинга
 	    function director_load_rating(){
 	      var period=$('#rating-period').val();
+		  var begDate = $('#begDate').val()=="" ? null : new Date($('#begDate').val());
+		  var endDate = $('#endDate').val()=="" ? null : new Date($('#endDate').val());	
 	      var typeGroup=$('#rating-type-group').val();
 	      //
 	      //alert(recordsArr['recordsOwner']+"-"+period+"-"+typeGroup+"-"+recordsArr['selectServiceCode']);
 	      $.ajax({
 	      url : getUrlMfc()+"/rest/mobileServices/analyticExt",
 	      type : "GET",
-	      data : {phone:propsApp['phone'], pwd:propsApp['password'],period:period, owner:recordsArr['recordsOwner'], 
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'],period:period, begDate:begDate, endDate: endDate, owner:recordsArr['recordsOwner'], 
 		mode:recordsArr["ratingCode"], typegroup:typeGroup, service:recordsArr['selectServiceCode']},
 	      contentType : "application/json",
 	      dataType: "jsonp",
@@ -2122,7 +2129,10 @@
 	    </div>
 	    <div data-role="content" data-theme="b">
 		<h3 id="director_page_analytic_ownerName"></h3>
-		<select onchange="director_analytic_mfc(recordsArr['recordsOwner'],this)" name="analytic-period" id="analytic-period" data-native-menu="false">
+ 		
+		<select onchange="director_analytic_mfc(recordsArr['recordsOwner'],this)" 
+			
+			name="analytic-period" id="analytic-period" data-native-menu="false">
 		    <option value="day1">1 день</option>
 		    <option value="day7">7 дней</option>
 		    <option value="day10">10 дней</option>
@@ -2132,6 +2142,12 @@
 		    <option value="day180">180 дней</option>
 		    <option value="day365">365 дней</option>
 		</select>
+		
+		<div class="ui-grid-a">
+    		<div class="ui-block-a">Период c <input id="analytic-begDate" type="date"/></div>
+    		<div class="ui-block-b">по <input id="analytic-endDate" type="date"/></div>
+		</div>
+		<input type="button" value="Обновить" data-theme="a" onclick="director_analytic_mfc(recordsArr['recordsOwner'],null)"/>
 <!--		
 		<a onclick="director_analytic_mfc()" data-role="button" data-inline="false">Обновить</a>
 		-->
@@ -2156,7 +2172,10 @@
 	    <div data-role="content" data-theme="b">
 		<h3 id="director_page_analytic_ownerName"></h3>
 		<h3 id="director_page_rating_mode" style="color:red">!!!!<h3>
-		<select onchange="director_load_rating()" name="rating-period" id="rating-period" data-native-menu="false">
+  		  
+		<select onchange="director_load_rating()" name="rating-period" id="rating-period" 
+		  
+		  data-native-menu="false">
 		  <option value="day1">1 день</option>
 		  <option value="day7">7 дней</option>
 		  <option value="day10">10 дней</option>
@@ -2166,6 +2185,13 @@
 		  <option value="day180">180 дней</option>
 		  <option value="day365">365 дней</option>
 		</select>
+	
+		<div class="ui-grid-a">
+    		<div class="ui-block-a">Период c <input id="begDate" type="date"/></div>
+    		<div class="ui-block-b">по <input id="endDate" type="date"/></div>
+		</div>
+		<input type="button" value="Обновить" data-theme="a" onchange="director_load_rating()"/>
+		
 		<div id="rating-type-group-div" style="display:none">
 		<select onchange="director_load_rating()" name="rating-type-group" id="rating-type-group" data-native-menu="false">
 		  <option value="hour">По часам</option>
