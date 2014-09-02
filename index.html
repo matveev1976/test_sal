@@ -113,7 +113,7 @@
         <script type="text/javascript">
 
 	    var ddd;
-	    var storeName='propsAppMFC_New211';
+	    var storeName='propsAppMFC_New999';
 	    var propsAppEt = {'phone':'','email':'','password':'','urlrepo':'http://192.168.58.135','auto_selectMFC':'','director':false,'lastApp':'user','register':false};
 	    var propsApp;
 	    var userError;
@@ -1422,28 +1422,14 @@
 
 	    function director_analytic_mfc(owner,val){
 	      var period;
-	      var begDate;
-	      var endDate;
-	      if (val==null){
+	      if (val==null)
 		period=$('#analytic-period').val();
-		if (!checkEmptyPeriod('analytic-begDate', 'analytic-endDate')){
-		  begDate = new Date($('#analytic-begDate').val());
-		  endDate = new Date($('#analytic-endDate').val());	
-		}else {
-		  var date = new Date();
-		  var currDate = date.getFullYear()+"-"+((date.getMonth()+1) < 10 ? "0":"")+(date.getMonth()+1)+"-"+(date.getDate()<10 ? "0" : 0)+date.getDate();
-		  $('#analytic-begDate').val(currDate);
-		  $('#analytic-endDate').val(currDate);
-		  begDate = date;
-		  endDate = date;
-		}
-	      }
 	      else
 		period=$(val).val();
 	      $.ajax({
 	      url : getUrlMfc()+"/rest/mobileServices/analyticMFC",
 	      type : "GET",
-	      data : {phone:propsApp['phone'], pwd:propsApp['password'],period:period, begDate: begDate, endDate: endDate, typeApp:typeApp, owner:owner},
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'],period:period, typeApp:typeApp, owner:owner},
 	      contentType : "application/json",
 	      dataType: "jsonp",
 	      success :
@@ -1522,27 +1508,14 @@
 	    
 	    //Загрузка выбранного рейтинга
 	    function director_load_rating(){
-	      var period=null;//$('#rating-period').val();
-	      var begDate;
-	      var endDate;
-	      if (!checkEmptyPeriod('begDate', 'endDate')){
-		begDate = $('#begDate').val()=="" ? null : new Date($('#begDate').val());
-		endDate = $('#endDate').val()=="" ? null : new Date($('#endDate').val());	
-	      }else {
-		var date = new Date();
-		var currDate = date.getFullYear()+"-"+((date.getMonth()+1) < 10 ? "0":"")+(date.getMonth()+1)+"-"+(date.getDate()<10 ? "0" : 0)+date.getDate();
-		$('#begDate').val(currDate);
-		$('#endDate').val(currDate);
-		begDate = date;
-		endDate = date;
-	      }
+	      var period=$('#rating-period').val();
 	      var typeGroup=$('#rating-type-group').val();
 	      //
 	      //alert(recordsArr['recordsOwner']+"-"+period+"-"+typeGroup+"-"+recordsArr['selectServiceCode']);
 	      $.ajax({
 	      url : getUrlMfc()+"/rest/mobileServices/analyticExt",
 	      type : "GET",
-	      data : {phone:propsApp['phone'], pwd:propsApp['password'],period:period, begDate: begDate, endDate: endDate, owner:recordsArr['recordsOwner'], 
+	      data : {phone:propsApp['phone'], pwd:propsApp['password'],period:period, owner:recordsArr['recordsOwner'], 
 		mode:recordsArr["ratingCode"], typegroup:typeGroup, service:recordsArr['selectServiceCode']},
 	      contentType : "application/json",
 	      dataType: "jsonp",
@@ -1896,11 +1869,7 @@
 		});
 	      }
 	    }
-	    function checkEmptyPeriod(begDate, endDate){
-	      var begPer = document.getElementById(begDate);
-	      var endPer = document.getElementById(endDate);
-	      return !(begPer && begPer.value != "" && endPer && endPer.value != "");
-	    }
+	    
         </script>
         
 	<style type="text/css">
@@ -2153,10 +2122,7 @@
 	    </div>
 	    <div data-role="content" data-theme="b">
 		<h3 id="director_page_analytic_ownerName"></h3>
-<!-- 		
-		<select onchange="director_analytic_mfc(recordsArr['recordsOwner'],this)" 
-			style="display:none"
-			name="analytic-period" id="analytic-period" data-native-menu="false">
+		<select onchange="director_analytic_mfc(recordsArr['recordsOwner'],this)" name="analytic-period" id="analytic-period" data-native-menu="false">
 		    <option value="day1">1 день</option>
 		    <option value="day7">7 дней</option>
 		    <option value="day10">10 дней</option>
@@ -2166,18 +2132,6 @@
 		    <option value="day180">180 дней</option>
 		    <option value="day365">365 дней</option>
 		</select>
--->	
-		
-		<div class="ui-grid-a">
-    		<div class="ui-block-a">Период c <input id="analytic-begDate" type="date"/></div>
-    		<div class="ui-block-b">по <input id="analytic-endDate" type="date"/></div>
-		</div>
-		<input type="button" value="Обновить" data-theme="b" 
-		  onclick="if (!checkEmptyPeriod('analytic-begDate', 'analytic-endDate')) {
-			    director_analytic_mfc(recordsArr['recordsOwner'],null);
-			   }else {
-			     alert('Не выбран период!');
-			   }"/>
 <!--		
 		<a onclick="director_analytic_mfc()" data-role="button" data-inline="false">Обновить</a>
 		-->
@@ -2202,10 +2156,7 @@
 	    <div data-role="content" data-theme="b">
 		<h3 id="director_page_analytic_ownerName"></h3>
 		<h3 id="director_page_rating_mode" style="color:red">!!!!<h3>
-<!--  		  
-		<select onchange="director_load_rating()" name="rating-period" id="rating-period" 
-		  style="display:none"
-		  data-native-menu="false">
+		<select onchange="director_load_rating()" name="rating-period" id="rating-period" data-native-menu="false">
 		  <option value="day1">1 день</option>
 		  <option value="day7">7 дней</option>
 		  <option value="day10">10 дней</option>
@@ -2215,18 +2166,6 @@
 		  <option value="day180">180 дней</option>
 		  <option value="day365">365 дней</option>
 		</select>
--->		
-	
-		<div class="ui-grid-a">
-    		<div class="ui-block-a">Период c <input id="begDate" type="date"/></div>
-    		<div class="ui-block-b">по <input id="endDate" type="date"/></div>
-		</div>
-		<input type="button" value="Обновить" data-theme="b" 
-			onclick="if (!checkEmptyPeriod('begDate', 'endDate')) {
-				  director_load_rating(); 
-				 }else { 
-				    alert('Не выбран период!');
-				 }"/>
 		<div id="rating-type-group-div" style="display:none">
 		<select onchange="director_load_rating()" name="rating-type-group" id="rating-type-group" data-native-menu="false">
 		  <option value="hour">По часам</option>
